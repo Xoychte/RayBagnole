@@ -34,7 +34,9 @@ endif()
 # Create executable
 add_executable(${PROJECT_NAME} main.c
         car.c
-        car.h)
+        car.h
+        vectUtils.c
+        vectUtils.h)
 
 # Link against Raylib (works for both installed and downloaded versions)
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)

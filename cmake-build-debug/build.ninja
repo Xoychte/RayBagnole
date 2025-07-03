@@ -65,6 +65,14 @@ build CMakeFiles/RayBagnole.dir/car.c.obj: C_COMPILER__RayBagnole_unscanned_Debu
   OBJECT_DIR = CMakeFiles\RayBagnole.dir
   OBJECT_FILE_DIR = CMakeFiles\RayBagnole.dir
 
+build CMakeFiles/RayBagnole.dir/vectUtils.c.obj: C_COMPILER__RayBagnole_unscanned_Debug C$:/Users/gabri/Desktop/RayBagnole/vectUtils.c || cmake_object_order_depends_target_RayBagnole
+  DEFINES = -DGRAPHICS_API_OPENGL_33 -DPLATFORM_DESKTOP
+  DEP_FILE = CMakeFiles\RayBagnole.dir\vectUtils.c.obj.d
+  FLAGS = -DGLFW_USE_HYBRID_HPG -g -std=gnu2x -fdiagnostics-color=always -Wall -Wextra
+  INCLUDES = -IC:/Users/gabri/Desktop/RayBagnole/cmake-build-debug/_deps/raylib-src/src -IC:/Users/gabri/Desktop/RayBagnole/cmake-build-debug/_deps/raylib-src/src/external/glfw/include
+  OBJECT_DIR = CMakeFiles\RayBagnole.dir
+  OBJECT_FILE_DIR = CMakeFiles\RayBagnole.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target RayBagnole
@@ -73,7 +81,7 @@ build CMakeFiles/RayBagnole.dir/car.c.obj: C_COMPILER__RayBagnole_unscanned_Debu
 #############################################
 # Link the executable RayBagnole.exe
 
-build RayBagnole.exe: C_EXECUTABLE_LINKER__RayBagnole_Debug CMakeFiles/RayBagnole.dir/main.c.obj CMakeFiles/RayBagnole.dir/car.c.obj | _deps/raylib-build/raylib/libraylib.a || _deps/raylib-build/raylib/external/glfw/src/glfw _deps/raylib-build/raylib/libraylib.a
+build RayBagnole.exe: C_EXECUTABLE_LINKER__RayBagnole_Debug CMakeFiles/RayBagnole.dir/main.c.obj CMakeFiles/RayBagnole.dir/car.c.obj CMakeFiles/RayBagnole.dir/vectUtils.c.obj | _deps/raylib-build/raylib/libraylib.a || _deps/raylib-build/raylib/external/glfw/src/glfw _deps/raylib-build/raylib/libraylib.a
   FLAGS = -DGLFW_USE_HYBRID_HPG -g
   LINK_LIBRARIES = _deps/raylib-build/raylib/libraylib.a  -lopengl32  -lglu32  -lwinmm  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\RayBagnole.dir

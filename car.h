@@ -26,4 +26,5 @@ typedef struct car {
 } car;
 
 void compute_body_positions(car* car);
+void display_car(car* car);
 #endif //CAR_H
