@@ -18,15 +18,23 @@ typedef struct relativePositions { // All of these are constants, describing the
     Vector2 FlToRl; // Front left to Rear left
 } relativePositions; // The car is currently symmetric
 
+typedef struct mechanics {
+    float mass;
+    Vector2 speed;
+    Vector2 acceleration;
+} mechanics;
+
 typedef struct car {
     body body;
     relativePositions relativePositions;
-    Vector2 centerPos;
+    Vector2 centerPos; // Also center of mass
     float angle;
+    mechanics mechanics;
 } car;
 
 Vector2 symmetric_CtoFr(const car* car);
 Vector2 symmetric_FrtoBr(const car* car);
+Vector2 get_facing_vector(const car* car);
 void compute_body_positions(car* car);
 void display_car(const car* car);
 car* create_le_car(void);

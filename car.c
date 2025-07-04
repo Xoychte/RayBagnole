@@ -4,6 +4,7 @@
 
 #include "car.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "vectUtils.h"
@@ -18,6 +19,11 @@ Vector2 symmetric_FrtoBr (const car* car) {
     Vector2 symmetric = (Vector2){car->relativePositions.FlToRl.x,-car->relativePositions.FlToRl.y};
     return Vector2Rotate(symmetric,car->angle);
 }
+
+Vector2 get_facing_vector (const car* car) {
+    return Vector2Rotate((Vector2){1,0},car->angle);
+}
+
 
 void compute_body_positions(car* car) {
     const Vector2 c = car->centerPos;
@@ -58,6 +64,10 @@ void display_car(const car* car) {
 
 car* create_le_car(void) {
     car* car = malloc(sizeof(struct car));
+    if (car == NULL) {
+        printf("Error allocating memory for car\n");
+        exit(EXIT_FAILURE);
+    }
 
     car->centerPos = (Vector2){200,200};
     car->relativePositions.CtoFl = (Vector2){50,-30};
@@ -70,6 +80,10 @@ car* create_le_car(void) {
     car->body.rearLeft = Vector2Zero();
 
     compute_body_positions(car);
+
+    car->mechanics.acceleration = (Vector2){0,0};
+    car->mechanics.speed = (Vector2){0,0};
+    car->mechanics.mass = 10;
 
     return car;
 }

@@ -3,6 +3,7 @@
 
 #include "raylib.h"
 #include "car.h"
+#include "raymath.h"
 
 int main(void) {
     printf("Starting le game\n");
@@ -17,10 +18,13 @@ int main(void) {
 
         //Handling imputs
         if (IsKeyDown(KEY_LEFT)) {
-            car->angle -= 0.1f;
+            car->angle -= 0.05f;
         }
         if (IsKeyDown(KEY_RIGHT)) {
-            car->angle += 0.1f;
+            car->angle += 0.05f;
+        }
+        if (IsKeyDown(KEY_UP)) {
+            car->mechanics.acceleration = get_facing_vector(car);
         }
 
         if (IsKeyDown(KEY_W)) {
@@ -44,6 +48,12 @@ int main(void) {
 
         display_car(car);
         EndDrawing();
+
+
+        //Updating forces and positions
+
+        car->centerPos = Vector2Add(car->centerPos, car->mechanics.speed);
+        car->mechanics.speed = Vector2Add(car->mechanics.speed, car->mechanics.acceleration);
 
     }
     free(car);
