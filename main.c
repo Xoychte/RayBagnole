@@ -17,10 +17,10 @@ int main(void) {
 
         //Handling imputs
         if (IsKeyDown(KEY_LEFT)) {
-            car->angle += 0.1f;
+            car->angle -= 0.1f;
         }
         if (IsKeyDown(KEY_RIGHT)) {
-            car->angle -= 0.1f;
+            car->angle += 0.1f;
         }
 
         if (IsKeyDown(KEY_W)) {

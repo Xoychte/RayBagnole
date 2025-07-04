@@ -28,7 +28,7 @@ void compute_body_positions(car* car) {
     Vector2 Fl2Rl = Vector2Rotate(car->relativePositions.FlToRl,car->angle);
     car->body.rearLeft = Vector2Add(Fl2Rl, car->body.frontLeft);
 
-    car->body.frontRight = Vector2Add(c, symmetric_FrtoBr(car));
+    car->body.frontRight = Vector2Add(c, symmetric_CtoFr(car));
     car->body.rearRight = Vector2Add(symmetric_FrtoBr(car), car->body.frontRight);
 }
 
@@ -39,20 +39,20 @@ void display_car(const car* car) {
     const Vector2 bl = car->body.rearLeft;
     const Vector2 c = car->centerPos;
 
-    /*
+
     DrawLineV(fl,fr,BLACK);
     DrawLineV(br,bl,BLACK);
     DrawLineV(fr,br,BLACK);
 
     DrawLineV(fl,bl,BLACK);
-    DrawLineV(c,fr,RED);
-    */
+    DrawLineV(c,fl,RED);
+
     DrawPixelV(c,MAGENTA);
 
     DrawPixelV(fl,BLUE);
     DrawPixelV(bl,DARKBLUE);
     DrawPixelV(fr,GREEN);
-    //DrawPixelV(br,DARKBLUE);
+    DrawPixelV(br,DARKBLUE);
 
 }
 
@@ -60,8 +60,8 @@ car* create_le_car(void) {
     car* car = malloc(sizeof(struct car));
 
     car->centerPos = (Vector2){200,200};
-    car->relativePositions.CtoFl = (Vector2){20,-10};
-    car->relativePositions.FlToRl = (Vector2){-30,-10};
+    car->relativePositions.CtoFl = (Vector2){50,-30};
+    car->relativePositions.FlToRl = (Vector2){-100,-5};
 
 
     car->body.frontLeft = Vector2Zero();
