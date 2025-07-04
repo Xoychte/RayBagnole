@@ -9,22 +9,26 @@
 typedef struct body {
     Vector2 frontLeft;
     Vector2 frontRight;
-    Vector2 backLeft;
-    Vector2 backRight;
+    Vector2 rearLeft;
+    Vector2 rearRight;
 } body;
 
-typedef struct relativePositions {
-    Vector2 fLtoBl;
-} relativePositions;
+typedef struct relativePositions { // All of these are constants, describing the car when its angle is null
+    Vector2 CtoFl; // Center to Front left
+    Vector2 FlToRl; // Front left to Rear left
+} relativePositions; // The car is currently symmetric
 
 typedef struct car {
     body body;
     relativePositions relativePositions;
     Vector2 centerPos;
-    double distCFL; //distance between center point and front left corner
-    double angle;
+    float angle;
 } car;
 
+Vector2 symmetric_CtoFr(const car* car);
+Vector2 symmetric_FrtoBr(const car* car);
 void compute_body_positions(car* car);
-void display_car(car* car);
+void display_car(const car* car);
+car* create_le_car(void);
+
 #endif //CAR_H

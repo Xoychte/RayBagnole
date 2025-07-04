@@ -8,4 +8,5 @@
 
 
 Vector2 vector_from_points(Vector2 origin, Vector2 destination);
+
 #endif //VECTUTILS_H
