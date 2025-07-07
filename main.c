@@ -4,11 +4,12 @@
 #include "raylib.h"
 #include "car.h"
 #include "raymath.h"
+#include "physics.h"
 
 int main(void) {
     printf("Starting le game\n");
 
-    InitWindow(800, 600, "RayBagnole");
+    InitWindow(1500, 1000, "RayBagnole");
     SetTargetFPS(60);
 
     car* car = create_le_car();
@@ -23,9 +24,7 @@ int main(void) {
         if (IsKeyDown(KEY_RIGHT)) {
             car->angle += 0.05f;
         }
-        if (IsKeyDown(KEY_UP)) {
-            car->mechanics.acceleration = get_facing_vector(car);
-        }
+
 
         if (IsKeyDown(KEY_W)) {
             car->centerPos.y -= 1.f;
@@ -51,9 +50,9 @@ int main(void) {
 
 
         //Updating forces and positions
-
-        car->centerPos = Vector2Add(car->centerPos, car->mechanics.speed);
-        car->mechanics.speed = Vector2Add(car->mechanics.speed, car->mechanics.acceleration);
+        Vector2 acc = compute_acceleration(car);
+        apply_acceleration(car,60);
+        update_position(car,60);
 
     }
     free(car);
