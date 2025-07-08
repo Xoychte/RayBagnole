@@ -35,13 +35,14 @@ void compute_body_positions(car* car) {
     car->body.frontRight = Vector2Add(c, symmetric_CtoFr(car));
     car->body.rearRight = Vector2Add(symmetric_FrtoBr(car), car->body.frontRight);
 
-    car->wheels.FwheelCenter = car->body.frontLeft;
+    car->wheels.FwheelCenter = Vector2Add(car->centerPos,Vector2Rotate(car->relativePositions.CtofLw,car->angle));
 }
 
 void display_wheels (car* car) {
     float FwBis = car->wheels.FwheelWidth / 2;
     float fullAngle = car->angle + car->wheels.FwheelAngle;
-    //Drawing the front of the front left tire (awful)
+
+    //Drawing the front left tire (awful)
 
     Vector2 fLwfLc = Vector2Add(car->wheels.FwheelCenter, Vector2Rotate((Vector2){car->wheels.FwheelRadius,FwBis},fullAngle)); //Front left corner of the front left tire
     Vector2 fLwfRc = Vector2Add(car->wheels.FwheelCenter,Vector2Rotate((Vector2){car->wheels.FwheelRadius,(-1)*FwBis},fullAngle)); //Front right corner of the front left tire
@@ -54,6 +55,18 @@ void display_wheels (car* car) {
     DrawLineV(fLwrLc,fLwrRc,GRAY);
     DrawLineV(fLwfLc,fLwrLc,GRAY);
     DrawLineV(fLwfRc,fLwrRc,GRAY);
+
+    //Drawing the front right tire by applying a simple translation to the left
+    Vector2 translation = Vector2Rotate((Vector2){0,2 * car->relativePositions.CtofLw.y},car->angle);
+
+    Vector2 fRwfLc = Vector2Subtract(fLwfLc,translation);
+    Vector2 fRwfRc = Vector2Subtract(fLwfRc,translation);
+    Vector2 fRwrLc = Vector2Subtract(fLwrLc,translation);
+    Vector2 fRwrRc = Vector2Subtract(fLwrRc,translation);
+    DrawLineV(fRwfLc,fRwfRc,GRAY);
+    DrawLineV(fRwrLc,fRwrRc,GRAY);
+    DrawLineV(fRwfLc,fRwrLc,GRAY);
+    DrawLineV(fRwfRc,fRwrRc,GRAY);
 
 
 }
@@ -105,10 +118,11 @@ car* create_le_car(void) {
     car->mechanics.speed = (Vector2){0,0};
     car->mechanics.mass = 10;
 
-    car->wheels.FwheelWidth = 20;
+    car->wheels.FwheelWidth = 15;
     car->wheels.FwheelAngle = 0;
-    car->wheels.FwheelRadius = 15;
+    car->wheels.FwheelRadius = 13;
     car->wheels.FwheelCenter = (Vector2){0,0};
+    car->relativePositions.CtofLw = (Vector2){34,-28};
 
     return car;
 }

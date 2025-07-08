@@ -28,6 +28,8 @@ typedef struct body {
 typedef struct relativePositions { // All of these are constants, describing the car when its angle is null
     Vector2 CtoFl; // Center to Front left
     Vector2 FlToRl; // Front left to Rear left
+    Vector2 CtofLw; // Center to front left wheel
+    Vector2 CtorLw; // Center to rear left wheel
 } relativePositions; // The car is currently symmetric
 
 typedef struct mechanics {

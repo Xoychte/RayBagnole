@@ -20,11 +20,23 @@ int main(void) {
         //Handling imputs
         if (IsKeyDown(KEY_LEFT)) {
             car->angle -= 0.05f;
-            car->wheels.FwheelAngle -= 0.05f;
+            if (car->wheels.FwheelAngle > -0.6f) {
+                car->wheels.FwheelAngle -= 0.05f;
+            }
         }
         if (IsKeyDown(KEY_RIGHT)) {
             car->angle += 0.05f;
-            car->wheels.FwheelAngle += 0.05f;
+            if (car->wheels.FwheelAngle < 0.6f) {
+                car->wheels.FwheelAngle += 0.05f;
+            }
+        }
+        if (IsKeyUp(KEY_RIGHT) && IsKeyUp(KEY_LEFT)) {
+            if (fabs(car->wheels.FwheelAngle) <= 0.1f) {
+                car->wheels.FwheelAngle = 0.f;
+            } else {
+                car->wheels.FwheelAngle /= 1.3f;
+            }
+
         }
 
 
