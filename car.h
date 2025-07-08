@@ -6,6 +6,18 @@
 #define CAR_H
 #include "raylib.h"
 
+typedef struct wheels {
+    float FwheelRadius;
+    float FwheelWidth;
+    Vector2 FwheelCenter;
+    float FwheelAngle;
+
+    float RwheelRadius;
+    float RwheelWidth;
+    Vector2 RwheelCenter;
+
+} wheels;
+
 typedef struct body {
     Vector2 frontLeft;
     Vector2 frontRight;
@@ -26,6 +38,7 @@ typedef struct mechanics {
 
 typedef struct car {
     body body;
+    wheels wheels;
     relativePositions relativePositions;
     Vector2 centerPos; // Also center of mass
     float angle;
@@ -36,7 +49,8 @@ Vector2 symmetric_CtoFr(const car* car);
 Vector2 symmetric_FrtoBr(const car* car);
 Vector2 get_facing_vector(const car* car);
 void compute_body_positions(car* car);
-void display_car(const car* car);
+void display_wheels(car* car);
+void display_body(const car* car);
 car* create_le_car(void);
 
 #endif //CAR_H

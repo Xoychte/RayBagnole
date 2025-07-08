@@ -20,9 +20,11 @@ int main(void) {
         //Handling imputs
         if (IsKeyDown(KEY_LEFT)) {
             car->angle -= 0.05f;
+            car->wheels.FwheelAngle -= 0.05f;
         }
         if (IsKeyDown(KEY_RIGHT)) {
             car->angle += 0.05f;
+            car->wheels.FwheelAngle += 0.05f;
         }
 
 
@@ -44,8 +46,8 @@ int main(void) {
         BeginDrawing();
         DrawFPS(0, 0);
         ClearBackground(RAYWHITE);
-
-        display_car(car);
+        display_body(car);
+        display_wheels(car);
         EndDrawing();
 
 

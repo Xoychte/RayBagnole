@@ -10,7 +10,7 @@
 #include "raymath.h"
 
 //these constants will need finetuning to work
-#define CDRAG  0.4257
+#define CDRAG  0.04257
 #define CRR 12.8
 /*
 Returns drag force as a 2D vector, using a pointer to a car structure and the drag constant Cdrag
@@ -39,7 +39,7 @@ The car is considered rwd as the traction applies towards the nose of the car
 Vector2 compute_traction(car* car) {
     Vector2 traction;
     if (IsKeyDown(KEY_UP)) {
-        traction = Vector2Scale(get_facing_vector(car),100000); //TODO use the car engine power instead of a total constant
+        traction = Vector2Scale(get_facing_vector(car),20000); //TODO use the car engine power instead of a total constant
     } else {
         traction = Vector2Zero();
     }

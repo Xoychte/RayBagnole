@@ -11,13 +11,11 @@
 #include "raymath.h"
 
 Vector2 symmetric_CtoFr (const car* car) {
-    Vector2 symmetric = (Vector2){car->relativePositions.CtoFl.x,-car->relativePositions.CtoFl.y};
-    return Vector2Rotate(symmetric,car->angle);
+    return symmetric_and_rotate(car->relativePositions.CtoFl,car->angle);
 }
 
 Vector2 symmetric_FrtoBr (const car* car) {
-    Vector2 symmetric = (Vector2){car->relativePositions.FlToRl.x,-car->relativePositions.FlToRl.y};
-    return Vector2Rotate(symmetric,car->angle);
+    return symmetric_and_rotate(car->relativePositions.FlToRl,car->angle);
 }
 
 Vector2 get_facing_vector (const car* car) {
@@ -36,9 +34,31 @@ void compute_body_positions(car* car) {
 
     car->body.frontRight = Vector2Add(c, symmetric_CtoFr(car));
     car->body.rearRight = Vector2Add(symmetric_FrtoBr(car), car->body.frontRight);
+
+    car->wheels.FwheelCenter = car->body.frontLeft;
 }
 
-void display_car(const car* car) {
+void display_wheels (car* car) {
+    float FwBis = car->wheels.FwheelWidth / 2;
+    float fullAngle = car->angle + car->wheels.FwheelAngle;
+    //Drawing the front of the front left tire (awful)
+
+    Vector2 fLwfLc = Vector2Add(car->wheels.FwheelCenter, Vector2Rotate((Vector2){car->wheels.FwheelRadius,FwBis},fullAngle)); //Front left corner of the front left tire
+    Vector2 fLwfRc = Vector2Add(car->wheels.FwheelCenter,Vector2Rotate((Vector2){car->wheels.FwheelRadius,(-1)*FwBis},fullAngle)); //Front right corner of the front left tire
+    DrawLineV(fLwfLc,fLwfRc,GRAY);
+
+    Vector2 tireSide = Vector2Rotate((Vector2){car->wheels.FwheelRadius * 2,0.f},fullAngle);
+
+    Vector2 fLwrLc = Vector2Subtract(fLwfLc,tireSide);
+    Vector2 fLwrRc = Vector2Subtract(fLwfRc,tireSide);
+    DrawLineV(fLwrLc,fLwrRc,GRAY);
+    DrawLineV(fLwfLc,fLwrLc,GRAY);
+    DrawLineV(fLwfRc,fLwrRc,GRAY);
+
+
+}
+
+void display_body(const car* car) {
     const Vector2 fl = car->body.frontLeft;
     const Vector2 fr = car->body.frontRight;
     const Vector2 br = car->body.rearRight;
@@ -84,6 +104,11 @@ car* create_le_car(void) {
     car->mechanics.acceleration = (Vector2){0,0};
     car->mechanics.speed = (Vector2){0,0};
     car->mechanics.mass = 10;
+
+    car->wheels.FwheelWidth = 20;
+    car->wheels.FwheelAngle = 0;
+    car->wheels.FwheelRadius = 15;
+    car->wheels.FwheelCenter = (Vector2){0,0};
 
     return car;
 }
