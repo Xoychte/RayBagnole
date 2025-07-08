@@ -36,6 +36,7 @@ void compute_body_positions(car* car) {
     car->body.rearRight = Vector2Add(symmetric_FrtoBr(car), car->body.frontRight);
 
     car->wheels.FwheelCenter = Vector2Add(car->centerPos,Vector2Rotate(car->relativePositions.CtofLw,car->angle));
+    car->wheels.RwheelCenter = Vector2Add(car->centerPos,Vector2Rotate(car->relativePositions.CtorLw,car->angle));
 }
 
 void display_wheels (car* car) {
@@ -57,16 +58,43 @@ void display_wheels (car* car) {
     DrawLineV(fLwfRc,fLwrRc,GRAY);
 
     //Drawing the front right tire by applying a simple translation to the left
-    Vector2 translation = Vector2Rotate((Vector2){0,2 * car->relativePositions.CtofLw.y},car->angle);
+    Vector2 translationL = Vector2Rotate((Vector2){0,2 * car->relativePositions.CtofLw.y},car->angle);
 
-    Vector2 fRwfLc = Vector2Subtract(fLwfLc,translation);
-    Vector2 fRwfRc = Vector2Subtract(fLwfRc,translation);
-    Vector2 fRwrLc = Vector2Subtract(fLwrLc,translation);
-    Vector2 fRwrRc = Vector2Subtract(fLwrRc,translation);
+    Vector2 fRwfLc = Vector2Subtract(fLwfLc,translationL);
+    Vector2 fRwfRc = Vector2Subtract(fLwfRc,translationL);
+    Vector2 fRwrLc = Vector2Subtract(fLwrLc,translationL);
+    Vector2 fRwrRc = Vector2Subtract(fLwrRc,translationL);
     DrawLineV(fRwfLc,fRwfRc,GRAY);
     DrawLineV(fRwrLc,fRwrRc,GRAY);
     DrawLineV(fRwfLc,fRwrLc,GRAY);
     DrawLineV(fRwfRc,fRwrRc,GRAY);
+
+    //Drawing the rear left tire
+    float RwBis = car->wheels.RwheelWidth / 2;
+    float RwRadius = car->wheels.RwheelRadius;
+
+    Vector2 rLwfLc = Vector2Add(car->wheels.RwheelCenter,Vector2Rotate((Vector2){RwRadius,RwBis},car->angle));
+    Vector2 rLwfRc = Vector2Add(car->wheels.RwheelCenter,Vector2Rotate((Vector2){RwRadius,(-1)*RwBis},car->angle));
+    Vector2 rLwrLc = Vector2Subtract(car->wheels.RwheelCenter,Vector2Rotate((Vector2){RwRadius,(-1)*RwBis},car->angle));
+    Vector2 rLwrRc = Vector2Subtract(car->wheels.RwheelCenter,Vector2Rotate((Vector2){RwRadius,RwBis},car->angle));
+
+    DrawLineV(rLwfLc,rLwfRc,GRAY);
+    DrawLineV(rLwfLc,rLwrLc,GRAY);
+    DrawLineV(rLwrLc,rLwrRc,GRAY);
+    DrawLineV(rLwfRc,rLwrRc,GRAY);
+
+    //Drawing the rear right tire by translating the left one
+    Vector2 translationR = Vector2Rotate((Vector2){0,2 * car->relativePositions.CtorLw.y},car->angle);
+
+    Vector2 rRwfLc = Vector2Subtract(rLwfLc,translationR);
+    Vector2 rRwfRc = Vector2Subtract(rLwfRc,translationR);
+    Vector2 rRwrLc = Vector2Subtract(rLwrLc,translationR);
+    Vector2 rRwrRc = Vector2Subtract(rLwrRc,translationR);
+
+    DrawLineV(rRwfLc,rRwfRc,GRAY);
+    DrawLineV(rRwrLc,rRwrRc,GRAY);
+    DrawLineV(rRwrLc,rRwfLc,GRAY);
+    DrawLineV(rRwrRc,rRwfRc,GRAY);
 
 
 }
@@ -123,6 +151,11 @@ car* create_le_car(void) {
     car->wheels.FwheelRadius = 13;
     car->wheels.FwheelCenter = (Vector2){0,0};
     car->relativePositions.CtofLw = (Vector2){34,-28};
+
+
+    car->wheels.RwheelWidth = 15;
+    car->wheels.RwheelRadius = 13;
+    car->relativePositions.CtorLw = (Vector2){-31,-35};
 
     return car;
 }
