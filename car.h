@@ -6,15 +6,19 @@
 #define CAR_H
 #include "raylib.h"
 
+
+
 typedef struct wheels {
     float FwheelRadius;
     float FwheelWidth;
     Vector2 FwheelCenter;
     float FwheelAngle;
+    float FaxleWeight;
 
     float RwheelRadius;
     float RwheelWidth;
     Vector2 RwheelCenter;
+    float RaxleWeight;
 
 } wheels;
 
@@ -53,6 +57,8 @@ Vector2 get_facing_vector(const car* car);
 void compute_body_positions(car* car);
 void display_wheels(car* car);
 void display_body(const car* car);
+void display_weight_distrib(const car* car);
 car* create_le_car(void);
+void camera_follow(car* car, Camera2D* camera);
 
 #endif //CAR_H

@@ -39,7 +39,7 @@ void compute_body_positions(car* car) {
     car->wheels.RwheelCenter = Vector2Add(car->centerPos,Vector2Rotate(car->relativePositions.CtorLw,car->angle));
 }
 
-void display_wheels (car* car) {
+void display_wheels (car* car) { //TODO look into the weird interaction when turning
     float FwBis = car->wheels.FwheelWidth / 2;
     float fullAngle = car->angle + car->wheels.FwheelAngle;
 
@@ -112,15 +112,26 @@ void display_body(const car* car) {
     DrawLineV(fr,br,BLACK);
 
     DrawLineV(fl,bl,BLACK);
-    DrawLineV(c,fl,RED);
+    //DrawLineV(c,fl,RED);
 
     DrawPixelV(c,MAGENTA);
 
-    DrawPixelV(fl,BLUE);
-    DrawPixelV(bl,DARKBLUE);
-    DrawPixelV(fr,GREEN);
-    DrawPixelV(br,DARKBLUE);
 
+}
+
+void display_weight_distrib(const car* car) {
+    char buffer[100];
+    sprintf(buffer,"%f\n",(car->wheels.FaxleWeight/car->mechanics.mass) * 100);
+    const char *FAXLE = buffer + '%';
+    DrawText(FAXLE + '%', 0, 20, 10, GRAY);
+
+    sprintf(buffer,"%f\n",(car->wheels.RaxleWeight/car->mechanics.mass) * 100);
+    const char *RAXLE = buffer;
+    DrawText(RAXLE + '%', 0, 40, 10, GRAY);
+
+    if (IsKeyDown(KEY_A)) {
+        printf("%f\n",(car->wheels.RaxleWeight/car->mechanics.mass) * 100);
+    }
 }
 
 car* create_le_car(void) {
@@ -144,18 +155,26 @@ car* create_le_car(void) {
 
     car->mechanics.acceleration = (Vector2){0,0};
     car->mechanics.speed = (Vector2){0,0};
-    car->mechanics.mass = 10;
+    car->mechanics.mass = 1473; //kg
 
-    car->wheels.FwheelWidth = 15;
+    car->wheels.FwheelWidth = 13;
     car->wheels.FwheelAngle = 0;
     car->wheels.FwheelRadius = 13;
     car->wheels.FwheelCenter = (Vector2){0,0};
     car->relativePositions.CtofLw = (Vector2){34,-28};
 
-
-    car->wheels.RwheelWidth = 15;
+    car->wheels.RwheelWidth = 13;
     car->wheels.RwheelRadius = 13;
     car->relativePositions.CtorLw = (Vector2){-31,-35};
 
+    float wheelBaseLength = (float)fabs(car->relativePositions.CtofLw.x - car->relativePositions.CtorLw.x);
+    car->wheels.FaxleWeight = (car->relativePositions.CtorLw.x / wheelBaseLength) * car->mechanics.mass;
+    car->wheels.RaxleWeight = (car->relativePositions.CtofLw.x / wheelBaseLength) * car->mechanics.mass;
+
     return car;
+}
+
+void camera_follow(car* car,Camera2D* camera) {
+    Vector2 position = Vector2Add(car->centerPos,Vector2Scale(car->mechanics.speed,0.01f));
+    camera->target = position;
 }
