@@ -119,20 +119,6 @@ void display_body(const car* car) {
 
 }
 
-void display_weight_distrib(const car* car) {
-    char buffer[100];
-    sprintf(buffer,"%f\n",(car->wheels.FaxleWeight/car->mechanics.mass) * 100);
-    const char *FAXLE = buffer + '%';
-    DrawText(FAXLE + '%', 0, 20, 10, GRAY);
-
-    sprintf(buffer,"%f\n",(car->wheels.RaxleWeight/car->mechanics.mass) * 100);
-    const char *RAXLE = buffer;
-    DrawText(RAXLE + '%', 0, 40, 10, GRAY);
-
-    if (IsKeyDown(KEY_A)) {
-        printf("%f\n",(car->wheels.RaxleWeight/car->mechanics.mass) * 100);
-    }
-}
 
 car* create_le_car(void) {
     car* car = malloc(sizeof(struct car));
@@ -167,9 +153,9 @@ car* create_le_car(void) {
     car->wheels.RwheelRadius = 13;
     car->relativePositions.CtorLw = (Vector2){-31,-35};
 
-    float wheelBaseLength = (float)fabs(car->relativePositions.CtofLw.x - car->relativePositions.CtorLw.x);
-    car->wheels.FaxleWeight = (car->relativePositions.CtorLw.x / wheelBaseLength) * car->mechanics.mass;
-    car->wheels.RaxleWeight = (car->relativePositions.CtofLw.x / wheelBaseLength) * car->mechanics.mass;
+    float wheelBaseLength = (float)fabsf(car->relativePositions.CtofLw.x - car->relativePositions.CtorLw.x);
+    car->wheels.FaxleWeight = (fabsf(car->relativePositions.CtorLw.x) / wheelBaseLength) * car->mechanics.mass;
+    car->wheels.RaxleWeight = (fabsf(car->relativePositions.CtofLw.x) / wheelBaseLength) * car->mechanics.mass;
 
     return car;
 }

@@ -7,11 +7,14 @@
 
 #include "raylib.h"
 #include "raymath.h"
+#include "vectUtils.h"
 
 //these constants will need finetuning to work
 #define CDRAG  0.4257
-#define CRR 12.8
+#define CRR 1200.8
 #define CBRAKE 5000
+
+
 /*
 Returns drag force as a 2D vector, using a pointer to a car structure and the drag constant Cdrag
 Here we are using a quadratic drag
@@ -24,11 +27,19 @@ Vector2 compute_drag(car* car, const float Cdrag) {
 /*
 Returns all rolling resistances combined as a 2D vector, using pointer to a car structure and the rolling resistance function Crr
 This resistance is considered linear
+The resistance is the sum of both axle
 Crr should be approximately 30* larger than Cdrag
  */
 Vector2 compute_rolling_resistance(car* car, const float Crr) {
-    Vector2 RolRes = Vector2Scale(car->mechanics.speed,(-1)*Crr);
-    return RolRes;
+    //Rear axle
+    Vector2 RolResRear = Vector2Scale(car->mechanics.speed,(-1)*Crr*get_rear_weight_ratio(car));
+
+    //Front axle
+    Vector2 FwheelUnit = Vector2Normalize(Vector2Rotate(get_facing_vector(car),(-2)*car->wheels.FwheelAngle));
+    Vector2 RolResFront =Vector2Scale(FwheelUnit,(-1)*Crr*get_front_weight_ratio(car)*Vector2Length(car->mechanics.speed));
+
+
+    return Vector2Add(RolResRear,RolResFront);
 }
 
 /*
@@ -66,11 +77,19 @@ Vector2 compute_acceleration(car* car) {
 Updates weight distribution with the car's acceleration
 */
 void update_weight_distrib(car* car) {
-    float wheelBaseLength = (float)fabs(car->relativePositions.CtofLw.x - car->relativePositions.CtorLw.x);
+    float wheelBaseLength = fabsf(car->relativePositions.CtofLw.x - car->relativePositions.CtorLw.x);
 
     float accDistrib = Vector2DotProduct(car->mechanics.acceleration, get_facing_vector(car)) * car->mechanics.mass * ((car->wheels.RwheelRadius * 2) /wheelBaseLength); //The height of the center of mass is considered equal to the rear tire height
-    car->wheels.FaxleWeight = (car->relativePositions.CtorLw.x / wheelBaseLength) * car->mechanics.mass - accDistrib;
-    car->wheels.RaxleWeight = (car->relativePositions.CtofLw.x / wheelBaseLength) * car->mechanics.mass + accDistrib;
+    car->wheels.FaxleWeight = fabsf(car->relativePositions.CtorLw.x / wheelBaseLength) * car->mechanics.mass - accDistrib;
+    car->wheels.RaxleWeight = fabsf(car->relativePositions.CtofLw.x / wheelBaseLength) * car->mechanics.mass + accDistrib;
+}
+
+float get_front_weight_ratio(car* car) {
+    return car->wheels.FaxleWeight / car->mechanics.mass;
+}
+
+float get_rear_weight_ratio(car* car) {
+    return car->wheels.RaxleWeight / car->mechanics.mass;
 }
 
 /*
@@ -80,7 +99,7 @@ Also calls update_weight_distrib with said acceleration
 void apply_acceleration(car* car, int framerate) {
     car->mechanics.speed = Vector2Add(car->mechanics.speed,
                                     Vector2Scale(car->mechanics.acceleration,(1 / (float)framerate)));
-    update_weight_distrib(car);
+    //update_weight_distrib(car);
 }
 
 /*

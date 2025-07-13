@@ -57,7 +57,6 @@ Vector2 get_facing_vector(const car* car);
 void compute_body_positions(car* car);
 void display_wheels(car* car);
 void display_body(const car* car);
-void display_weight_distrib(const car* car);
 car* create_le_car(void);
 void camera_follow(car* car, Camera2D* camera);
 

@@ -16,3 +16,7 @@ Vector2 symmetric_and_rotate (Vector2 vec, float angle) {
     Vector2 res = (Vector2){vec.x, (-1)*vec.y};
     return Vector2Rotate(res, angle);
 }
+
+void draw_vect_at_car_center (car* car, Vector2 vec,Color color) {
+    DrawLineV(car->centerPos,Vector2Add(car->centerPos,vec),color);
+}

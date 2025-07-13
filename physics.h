@@ -11,6 +11,8 @@ Vector2 compute_rolling_resistance(car*, const float);
 Vector2 compute_traction(car*);
 Vector2 compute_acceleration(car*);
 void update_weight_distrib(car*);
+float get_front_weight_ratio(car*);
+float get_rear_weight_ratio(car*);
 void apply_acceleration(car*, int);
 void update_position(car*,int);
 

@@ -6,6 +6,7 @@
 #include "raymath.h"
 #include "physics.h"
 #include "rlgl.h"
+#include "vectUtils.h"
 
 int main(void) {
     printf("Starting le game\n");
@@ -47,19 +48,10 @@ int main(void) {
 
         }
 
-
-        if (IsKeyDown(KEY_W)) {
-            car->centerPos.y -= 1.f;
-        }
-        if (IsKeyDown(KEY_S)) {
-            car->centerPos.y += 1.f;
-        }
         if (IsKeyDown(KEY_A)) {
-            car->centerPos.x -= 1.f;
+            printf(" Front %f , Rear %f\n",get_front_weight_ratio(car), get_rear_weight_ratio(car));
         }
-        if (IsKeyDown(KEY_D)) {
-            car->centerPos.x += 1.f;
-        }
+
 
         //Handling display
 
@@ -77,7 +69,7 @@ int main(void) {
         rlPopMatrix();
         display_body(car);
         display_wheels(car);
-        display_weight_distrib(car);
+
 
         camera_follow(car,&camera);
 
