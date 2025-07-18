@@ -39,6 +39,10 @@ int main(void) {
                 car->wheels.FwheelAngle += 0.05f;
             }
         }
+
+        if (IsKeyPressed(KEY_ENTER)) {
+            car->angle += 3.14f;
+        }
         if (IsKeyUp(KEY_RIGHT) && IsKeyUp(KEY_LEFT)) {
             if (fabs(car->wheels.FwheelAngle) <= 0.1f) {
                 car->wheels.FwheelAngle = 0.f;
@@ -51,6 +55,7 @@ int main(void) {
         if (IsKeyDown(KEY_A)) {
             printf(" Front %f , Rear %f\n",get_front_weight_ratio(car), get_rear_weight_ratio(car));
         }
+
 
 
         //Handling display
@@ -77,11 +82,11 @@ int main(void) {
         EndMode2D();
         EndDrawing();
 
-
         //Updating forces and positions
         Vector2 acc = compute_acceleration(car);
         apply_acceleration(car,60);
         update_position(car,60);
+
 
     }
     free(car);

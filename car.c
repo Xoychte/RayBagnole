@@ -154,8 +154,8 @@ car* create_le_car(void) {
     car->relativePositions.CtorLw = (Vector2){-31,-35};
 
     float wheelBaseLength = (float)fabsf(car->relativePositions.CtofLw.x - car->relativePositions.CtorLw.x);
-    car->wheels.FaxleWeight = (fabsf(car->relativePositions.CtorLw.x) / wheelBaseLength) * car->mechanics.mass;
-    car->wheels.RaxleWeight = (fabsf(car->relativePositions.CtofLw.x) / wheelBaseLength) * car->mechanics.mass;
+    car->wheels.FaxleMass = (fabsf(car->relativePositions.CtorLw.x) / wheelBaseLength) * car->mechanics.mass;
+    car->wheels.RaxleMass = (fabsf(car->relativePositions.CtofLw.x) / wheelBaseLength) * car->mechanics.mass;
 
     return car;
 }

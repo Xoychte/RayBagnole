@@ -13,12 +13,12 @@ typedef struct wheels {
     float FwheelWidth;
     Vector2 FwheelCenter;
     float FwheelAngle;
-    float FaxleWeight;
+    float FaxleMass;
 
     float RwheelRadius;
     float RwheelWidth;
     Vector2 RwheelCenter;
-    float RaxleWeight;
+    float RaxleMass;
 
 } wheels;
 
