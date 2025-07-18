@@ -52,9 +52,6 @@ int main(void) {
 
         }
 
-        if (IsKeyDown(KEY_A)) {
-            printf(" Front %f , Rear %f\n",get_front_weight_ratio(car), get_rear_weight_ratio(car));
-        }
 
 
 
