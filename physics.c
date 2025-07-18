@@ -99,7 +99,7 @@ Vector2 compute_lateral_force(car* car) {
     Vector2 RfVec = Vector2Scale(RwheelOrtho,Rf);
 
     Vector2 res = Vector2Add(FfVec,RfVec);
-    return Vector2Scale(res,50);
+    return Vector2Scale(res,60);
 }
 /*
 Computes lateral forces with a simplified "magic" Pacejka formula

@@ -28,15 +28,15 @@ int main(void) {
 
         //Handling imputs
         if (IsKeyDown(KEY_LEFT)) {
-            car->angle -= 0.05f;
+            car->angle -= 0.03f;
             if (car->wheels.FwheelAngle > -0.6f) {
-                car->wheels.FwheelAngle -= 0.05f;
+                car->wheels.FwheelAngle -= 0.02f;
             }
         }
         if (IsKeyDown(KEY_RIGHT)) {
-            car->angle += 0.05f;
+            car->angle += 0.03f;
             if (car->wheels.FwheelAngle < 0.6f) {
-                car->wheels.FwheelAngle += 0.05f;
+                car->wheels.FwheelAngle += 0.02f;
             }
         }
 
