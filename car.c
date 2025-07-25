@@ -142,6 +142,7 @@ car* create_le_car(int screenHeight, int screenWidth) {
     car->mechanics.acceleration = (Vector2){0,0};
     car->mechanics.speed = (Vector2){0,0};
     car->mechanics.mass = 1473; //kg
+    car->mechanics.engineRPM = 0;
 
     car->wheels.FwheelWidth = 13;
     car->wheels.FwheelAngle = 0;
@@ -169,4 +170,14 @@ void camera_follow(car* car,Camera2D* camera) {
 //Returns car forward speed in km/h
 float get_speedometer(const car* car) {
     return Vector2DotProduct(car->mechanics.speed,get_facing_vector(car)) / 20;
+}
+
+void shift_gears(car* car) {
+    if (IsKeyPressed(KEY_UP) && car->mechanics.gear < 6) {
+        car->mechanics.gear++;
+        printf("Upshifted to %d th gear",car->mechanics.gear);
+    } else if (IsKeyPressed(KEY_DOWN) && car->mechanics.gear > -1) {
+        car->mechanics.gear--;
+        printf("Downshifted to %d th gear",car->mechanics.gear);
+    }
 }

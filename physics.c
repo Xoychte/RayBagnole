@@ -66,16 +66,51 @@ Returns traction force as a 2D vector using a car structure pointer
 Currently using a constant as engine power
 The car is considered rwd as the traction applies towards the nose of the car
  */
-Vector2 compute_traction(car* car) {
+Vector2 compute_traction(const car* car) {
     Vector2 traction = Vector2Zero();
     Vector2 breaking = Vector2Zero();
-    if (IsKeyDown(KEY_DOWN) && Vector2Length(car->mechanics.speed) > 0.f ) {
+    if (IsKeyDown(KEY_S) && Vector2Length(car->mechanics.speed) > 0.f ) {
         breaking = Vector2Scale(car->mechanics.speed,(-1)*CBRAKE);
     }
-    if (IsKeyDown(KEY_UP)) {
-        traction = Vector2Scale(get_facing_vector(car),1000000); //TODO use the car engine power instead of a total constant
+    if (IsKeyDown(KEY_W)) {
+        //traction = Vector2Scale(get_facing_vector(car),1000000); //TODO use the car engine power instead of a total constant
+        traction = compute_traction_v2(car,car->mechanics.gear);
     }
    return Vector2Add(traction, breaking);
+}
+
+Vector2 compute_traction_v2(const car* car,int gear) {
+    float xd = 3.42f; //Differential ratio
+    float n = 0.7f; //Transmission efficiency
+    float testTorque = 400.f; // in Newton meters
+    Vector2 Fdrive = Vector2Scale(get_facing_vector(car), 4000 * testTorque * get_gear_ratio(car,gear) * xd * n / car->wheels.RwheelRadius);
+    return Fdrive;
+}
+
+float get_torque(const car* car) {
+    return 0.f;
+}
+
+float get_gear_ratio(const car* car,int gear) {
+    switch (gear) {
+        case 0:
+            return 0;
+        case 1:
+            return 2.66f;
+        case 2:
+            return 1.78f;
+        case 3:
+            return 1.3f;
+        case 4:
+            return 1.f;
+        case 5:
+            return 0.74f;
+        case 6:
+            return 0.5f;
+        case -1: // Reverse gear
+            return -2.9f;
+        default: return 0;
+    }
 }
 
 Vector2 compute_lateral_force(car* car) {

@@ -34,13 +34,13 @@ int main(void) {
         compute_body_positions(car);
 
         //Handling imputs
-        if (IsKeyDown(KEY_LEFT)) {
+        if (IsKeyDown(KEY_A)) {
             car->angle -= 0.05f * 60/(float)FPS;
             if (car->wheels.FwheelAngle > -0.6f) {
                 car->wheels.FwheelAngle -= 0.05f * 60/(float)FPS;
             }
         }
-        if (IsKeyDown(KEY_RIGHT)) {
+        if (IsKeyDown(KEY_D)) {
             car->angle += 0.05f * 60/(float)FPS;
             if (car->wheels.FwheelAngle < 0.6f) {
                 car->wheels.FwheelAngle += 0.05f * 60/(float)FPS;
@@ -50,7 +50,7 @@ int main(void) {
         if (IsKeyPressed(KEY_ENTER)) {
             car->angle += 3.14f;
         }
-        if (IsKeyUp(KEY_RIGHT) && IsKeyUp(KEY_LEFT)) {
+        if (IsKeyUp(KEY_A) && IsKeyUp(KEY_D)) {
             if (fabs(car->wheels.FwheelAngle) <= 0.1f) {
                 car->wheels.FwheelAngle = 0.f;
             } else {
@@ -58,6 +58,7 @@ int main(void) {
             }
 
         }
+        shift_gears(car);
 
 
 
@@ -87,6 +88,15 @@ int main(void) {
                 Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 140}), 55, 2, BLACK);
 
 
+        if (car->mechanics.gear == -1) {
+            DrawTextEx(GetFontDefault(), "R",
+               Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 200}), 55, 2, BLACK);
+        } else {
+            DrawTextEx(GetFontDefault(), TextFormat("%d", car->mechanics.gear),
+               Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 200}), 55, 2, BLACK);
+
+
+        }
         camera_follow(car,&camera);
 
 
