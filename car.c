@@ -120,14 +120,14 @@ void display_body(const car* car) {
 }
 
 
-car* create_le_car(void) {
+car* create_le_car(int screenHeight, int screenWidth) {
     car* car = malloc(sizeof(struct car));
     if (car == NULL) {
         printf("Error allocating memory for car\n");
         exit(EXIT_FAILURE);
     }
 
-    car->centerPos = (Vector2){200,200};
+    car->centerPos = (Vector2){(float)screenWidth/2,(float)screenHeight/2};
     car->relativePositions.CtoFl = (Vector2){50,-30};
     car->relativePositions.FlToRl = (Vector2){-100,-5};
 

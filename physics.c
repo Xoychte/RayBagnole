@@ -99,7 +99,7 @@ Vector2 compute_lateral_force(car* car) {
     Vector2 RfVec = Vector2Scale(RwheelOrtho,Rf);
 
     Vector2 res = Vector2Add(FfVec,RfVec);
-    return Vector2Scale(res,50);
+    return Vector2Scale(res,65);
 }
 /*
 Computes lateral forces with a simplified "magic" Pacejka formula
@@ -155,6 +155,6 @@ void apply_acceleration(car* car, int framerate) {
 Changes the car's position based on it's speed
  */
 void update_position(car* car, int framerate) {
-    car->centerPos = Vector2Add(car->centerPos,
-                    Vector2Scale(car->mechanics.speed,(1 / (float)framerate)));
+    Vector2 delta = Vector2Scale(car->mechanics.speed,(1 / (float)framerate));
+    car->centerPos = Vector2Add(car->centerPos,delta);
 }
