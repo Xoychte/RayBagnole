@@ -114,7 +114,7 @@ void display_body(const car* car) {
     DrawLineV(fl,bl,BLACK);
     //DrawLineV(c,fl,RED);
 
-    DrawPixelV(c,MAGENTA);
+    //DrawPixelV(c,MAGENTA);
 
 
 }
@@ -128,8 +128,8 @@ car* create_le_car(int screenHeight, int screenWidth) {
     }
 
     car->centerPos = (Vector2){(float)screenWidth/2,(float)screenHeight/2};
-    car->relativePositions.CtoFl = (Vector2){50,-30};
-    car->relativePositions.FlToRl = (Vector2){-100,-5};
+    car->relativePositions.CtoFl = (Vector2){60,-30};
+    car->relativePositions.FlToRl = (Vector2){-120,-2};
 
 
     car->body.frontLeft = Vector2Zero();
@@ -151,9 +151,10 @@ car* create_le_car(int screenHeight, int screenWidth) {
 
     car->wheels.RwheelWidth = 13;
     car->wheels.RwheelRadius = 13;
-    car->relativePositions.CtorLw = (Vector2){-31,-35};
+    car->relativePositions.CtorLw = (Vector2){-35,-30};
 
     float wheelBaseLength = (float)fabsf(car->relativePositions.CtofLw.x - car->relativePositions.CtorLw.x);
+    printf("Car length %f m \n",wheelBaseLength/20.f); //20 pxl equals a meter currently
     car->wheels.FaxleMass = (fabsf(car->relativePositions.CtorLw.x) / wheelBaseLength) * car->mechanics.mass;
     car->wheels.RaxleMass = (fabsf(car->relativePositions.CtofLw.x) / wheelBaseLength) * car->mechanics.mass;
 
@@ -163,4 +164,9 @@ car* create_le_car(int screenHeight, int screenWidth) {
 void camera_follow(car* car,Camera2D* camera) {
     Vector2 position = Vector2Add(car->centerPos,Vector2Scale(car->mechanics.speed,0.01f));
     camera->target = position;
+}
+
+//Returns car forward speed in km/h
+float get_speedometer(const car* car) {
+    return Vector2DotProduct(car->mechanics.speed,get_facing_vector(car)) / 20;
 }

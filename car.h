@@ -59,5 +59,6 @@ void display_wheels(car* car);
 void display_body(const car* car);
 car* create_le_car(int,int);
 void camera_follow(car* car, Camera2D* camera);
+float get_speedometer(const car* car);
 
 #endif //CAR_H

@@ -68,7 +68,7 @@ int main(void) {
         BeginMode2D(camera);
 
 
-        DrawFPS(0, 0);
+
         ClearBackground(RAYWHITE);
 
         rlPushMatrix();
@@ -80,7 +80,16 @@ int main(void) {
         display_wheels(car);
 
 
+        //Draw the UI to follow the camera
+        DrawFPS((int)camera.target.x - ScreenWidth/ 2 + 20, (int)camera.target.y - ScreenHeight/2 + 20);
+
+        DrawTextEx(GetFontDefault(), TextFormat("%.1f km/h", get_speedometer(car)),
+                Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 140}), 55, 2, BLACK);
+
+
         camera_follow(car,&camera);
+
+
 
 
         EndMode2D();

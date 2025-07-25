@@ -71,7 +71,6 @@ Vector2 compute_traction(car* car) {
     Vector2 breaking = Vector2Zero();
     if (IsKeyDown(KEY_DOWN) && Vector2Length(car->mechanics.speed) > 0.f ) {
         breaking = Vector2Scale(car->mechanics.speed,(-1)*CBRAKE);
-        printf("Braking");
     }
     if (IsKeyDown(KEY_UP)) {
         traction = Vector2Scale(get_facing_vector(car),1000000); //TODO use the car engine power instead of a total constant
