@@ -6,21 +6,25 @@
 #include "raymath.h"
 #include "physics.h"
 #include "rlgl.h"
-#include "vectUtils.h"
+
 
 int main(void) {
     printf("Starting le game\n");
 
+    //Add the following for web
+    const int ScreenWidth = 1600;
+    const int ScreenHeight = 900;
+    InitWindow(ScreenWidth, ScreenHeight, "RayBagnole");
 
-
-    InitWindow(0, 0, "RayBagnole");
-
-    const int FPS = 120;
+    const int FPS = 60;
     SetTargetFPS(FPS);
-    const int ScreenWidth = GetScreenWidth();
-    const int ScreenHeight = GetScreenHeight();
+    //Remove the following for web
+    /*
+    int m = GetCurrentMonitor();
+    const int ScreenWidth = GetMonitorWidth(m);
+    const int ScreenHeight = GetMonitorHeight(m);
     printf("Screen size: %dx%d\n", ScreenWidth, ScreenHeight);
-
+*/
     car* car = create_le_car(ScreenHeight, ScreenWidth);
 
     Camera2D camera = { 0 };
@@ -29,7 +33,7 @@ int main(void) {
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
-
+    printf("Entering main loop\n");
     while (!WindowShouldClose()) {
         compute_body_positions(car);
 
@@ -64,7 +68,6 @@ int main(void) {
 
 
         //Handling display
-
         BeginDrawing();
         BeginMode2D(camera);
 
@@ -77,11 +80,13 @@ int main(void) {
         rlRotatef(90, 1, 0, 0);
         DrawGrid(100, 50);
         rlPopMatrix();
+
         display_body(car);
         display_wheels(car);
 
 
         //Draw the UI to follow the camera
+
         DrawFPS((int)camera.target.x - ScreenWidth/ 2 + 20, (int)camera.target.y - ScreenHeight/2 + 20);
 
         DrawTextEx(GetFontDefault(), TextFormat("%.1f km/h", get_speedometer(car)),
@@ -94,11 +99,10 @@ int main(void) {
         } else {
             DrawTextEx(GetFontDefault(), TextFormat("%d", car->mechanics.gear),
                Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 200}), 55, 2, BLACK);
-
-
         }
-        camera_follow(car,&camera);
 
+
+        camera_follow(car,&camera);
 
 
 
@@ -106,7 +110,8 @@ int main(void) {
         EndDrawing();
 
         //Updating forces and positions
-        Vector2 acc = compute_acceleration(car);
+
+        compute_acceleration(car);
         apply_acceleration(car,FPS);
         update_position(car,FPS);
 

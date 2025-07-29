@@ -1,7 +1,7 @@
 //
 // Created by gabri on 07/07/2025.
 //
-#include <stdio.h>
+
 #include "physics.h"
 
 
@@ -10,7 +10,7 @@
 #include "vectUtils.h"
 
 //these constants will need finetuning to work
-#define CDRAG  0.4257
+#define CDRAG  0.04257
 #define CRR 12.8
 #define CBRAKE 5000
 #define PI 3.14159265f
@@ -83,7 +83,7 @@ Vector2 compute_traction_v2(const car* car,int gear) {
     float xd = 3.42f; //Differential ratio
     float n = 0.7f; //Transmission efficiency
     float testTorque = 400.f; // in Newton meters
-    Vector2 Fdrive = Vector2Scale(get_facing_vector(car), 4000 * testTorque * get_gear_ratio(car,gear) * xd * n / car->wheels.RwheelRadius);
+    Vector2 Fdrive = Vector2Scale(get_facing_vector(car), 20000 * testTorque * get_gear_ratio(car,gear) * xd * n / car->wheels.RwheelRadius);
     return Fdrive;
 }
 
@@ -133,7 +133,7 @@ Vector2 compute_lateral_force(car* car) {
     Vector2 RfVec = Vector2Scale(RwheelOrtho,Rf);
 
     Vector2 res = Vector2Add(FfVec,RfVec);
-    return Vector2Scale(res,65);
+    return Vector2Scale(res,80);
 }
 /*
 Computes lateral forces with a simplified "magic" Pacejka formula

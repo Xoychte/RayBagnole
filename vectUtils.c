@@ -4,7 +4,6 @@
 
 #include "vectUtils.h"
 
-#include <math.h>
 
 #include "raymath.h"
 

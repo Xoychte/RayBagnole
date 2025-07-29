@@ -104,7 +104,7 @@ void display_body(const car* car) {
     const Vector2 fr = car->body.frontRight;
     const Vector2 br = car->body.rearRight;
     const Vector2 bl = car->body.rearLeft;
-    const Vector2 c = car->centerPos;
+    //const Vector2 c = car->centerPos;
 
 
     DrawLineV(fl,fr,BLACK);
@@ -143,6 +143,7 @@ car* create_le_car(int screenHeight, int screenWidth) {
     car->mechanics.speed = (Vector2){0,0};
     car->mechanics.mass = 1473; //kg
     car->mechanics.engineRPM = 0;
+    car->mechanics.gear = 0;
 
     car->wheels.FwheelWidth = 13;
     car->wheels.FwheelAngle = 0;
@@ -175,9 +176,7 @@ float get_speedometer(const car* car) {
 void shift_gears(car* car) {
     if (IsKeyPressed(KEY_UP) && car->mechanics.gear < 6) {
         car->mechanics.gear++;
-        printf("Upshifted to %d th gear",car->mechanics.gear);
     } else if (IsKeyPressed(KEY_DOWN) && car->mechanics.gear > -1) {
         car->mechanics.gear--;
-        printf("Downshifted to %d th gear",car->mechanics.gear);
     }
 }
