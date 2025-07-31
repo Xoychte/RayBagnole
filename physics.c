@@ -10,7 +10,7 @@
 #include "vectUtils.h"
 
 //these constants will need finetuning to work
-#define CDRAG  0.04257
+#define CDRAG  0.4257
 #define CRR 12.8
 #define CBRAKE 5000
 #define PI 3.14159265f
@@ -126,6 +126,13 @@ Vector2 compute_lateral_force(car* car) {
 
     //Rear axle
     float RearSlipAngle = radian_to_degree(Vector2Angle(car->mechanics.speed,facing));
+
+    if (fabsf(RearSlipAngle) > 40.f && Vector2Length(car->mechanics.speed) > 500.f) {
+        car->wheels.drifting = true;
+    } else {
+        car->wheels.drifting = false;
+    }
+
     float RearLoad = car->wheels.FaxleMass * G;
     float Rf = simplified_magic_formula(10.f,1.3f,1.f,0.97f,RearSlipAngle,RearLoad);
 
@@ -133,7 +140,7 @@ Vector2 compute_lateral_force(car* car) {
     Vector2 RfVec = Vector2Scale(RwheelOrtho,Rf);
 
     Vector2 res = Vector2Add(FfVec,RfVec);
-    return Vector2Scale(res,80);
+    return Vector2Scale(res,0.17f * Vector2Length(car->mechanics.speed)); //Testing a linear lateral force with speed
 }
 /*
 Computes lateral forces with a simplified "magic" Pacejka formula

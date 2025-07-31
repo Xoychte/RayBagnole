@@ -96,7 +96,6 @@ void display_wheels (car* car) { //TODO look into the weird interaction when tur
     DrawLineV(rRwrLc,rRwfLc,GRAY);
     DrawLineV(rRwrRc,rRwfRc,GRAY);
 
-
 }
 
 void display_body(const car* car) {
@@ -154,6 +153,7 @@ car* create_le_car(int screenHeight, int screenWidth) {
     car->wheels.RwheelWidth = 13;
     car->wheels.RwheelRadius = 13;
     car->relativePositions.CtorLw = (Vector2){-35,-30};
+    car->wheels.drifting = false;
 
     float wheelBaseLength = (float)fabsf(car->relativePositions.CtofLw.x - car->relativePositions.CtorLw.x);
     printf("Car length %f m \n",wheelBaseLength/20.f); //20 pxl equals a meter currently
@@ -178,5 +178,16 @@ void shift_gears(car* car) {
         car->mechanics.gear++;
     } else if (IsKeyPressed(KEY_DOWN) && car->mechanics.gear > -1) {
         car->mechanics.gear--;
+    }
+}
+
+void show_drifting(const car* car,RenderTexture2D* texture) {
+    if (car->wheels.drifting) {
+        //We start by computing the rear right tire center since we only have the left one
+        Vector2 RwheelCenterRight = Vector2Add(Vector2Rotate((Vector2){0,-2 * car->relativePositions.CtorLw.y},car->angle),car->wheels.RwheelCenter);
+        BeginTextureMode(*texture);
+        DrawCircle((int)car->wheels.RwheelCenter.x,(int)car->wheels.RwheelCenter.y,3,BLACK);
+        DrawCircle((int)RwheelCenterRight.x + 2,(int)RwheelCenterRight.y,3,BLACK);
+        EndTextureMode();
     }
 }

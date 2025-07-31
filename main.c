@@ -12,19 +12,21 @@ int main(void) {
     printf("Starting le game\n");
 
     //Add the following for web
+    /*
     const int ScreenWidth = 1600;
     const int ScreenHeight = 900;
-    InitWindow(ScreenWidth, ScreenHeight, "RayBagnole");
+    */
+    InitWindow(0, 0, "RayBagnole");
 
-    const int FPS = 60;
+    const int FPS = 120;
     SetTargetFPS(FPS);
     //Remove the following for web
-    /*
+
     int m = GetCurrentMonitor();
     const int ScreenWidth = GetMonitorWidth(m);
     const int ScreenHeight = GetMonitorHeight(m);
     printf("Screen size: %dx%d\n", ScreenWidth, ScreenHeight);
-*/
+
     car* car = create_le_car(ScreenHeight, ScreenWidth);
 
     Camera2D camera = { 0 };
@@ -32,6 +34,25 @@ int main(void) {
     camera.offset = (Vector2){ (float)ScreenWidth/2.0f, (float)ScreenHeight/2.0f };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
+
+
+    //Testing background
+    Image bcg = LoadImage("C:/Users/gabri/Desktop/RayBagnole/testmap.png");
+    if (!IsImageValid(bcg)) {
+        printf("Image is not valid\n");
+        return 1;
+    }
+    Texture2D background = LoadTextureFromImage(bcg);
+    UnloadImage(bcg);
+
+
+    // Create a RenderTexture2D to use as a canvas, will be used to add the tires marks when drifting
+    RenderTexture2D target = LoadRenderTexture(10000, 10000);
+
+    // Clear render texture before entering the game loop
+    BeginTextureMode(target);
+    ClearBackground((Color){ 255, 255, 255, 0 }); //Transparent background
+    EndTextureMode();
 
     printf("Entering main loop\n");
     while (!WindowShouldClose()) {
@@ -64,6 +85,10 @@ int main(void) {
         }
         shift_gears(car);
 
+        int currentFPS = GetFPS();
+        if (currentFPS == 0) { //Prevent dividing by zero
+            currentFPS = 1;
+        }
 
 
 
@@ -74,6 +99,10 @@ int main(void) {
 
 
         ClearBackground(RAYWHITE);
+        DrawTexture(background,0,0,WHITE);
+        DrawTextureRec(target.texture, (Rectangle) { 0, 0, (float)target.texture.width, (float)-target.texture.height }, (Vector2) { 0, 0 }, WHITE);
+
+
 
         rlPushMatrix();
         rlTranslatef(0, 25*50, 0);
@@ -81,8 +110,10 @@ int main(void) {
         DrawGrid(100, 50);
         rlPopMatrix();
 
+
         display_body(car);
         display_wheels(car);
+
 
 
         //Draw the UI to follow the camera
@@ -102,9 +133,10 @@ int main(void) {
         }
 
 
+
         camera_follow(car,&camera);
 
-
+        show_drifting(car,&target);
 
         EndMode2D();
         EndDrawing();
@@ -112,11 +144,15 @@ int main(void) {
         //Updating forces and positions
 
         compute_acceleration(car);
-        apply_acceleration(car,FPS);
-        update_position(car,FPS);
+        apply_acceleration(car,currentFPS);
+        update_position(car,currentFPS);
+
 
 
     }
+
     free(car);
+    UnloadTexture(background);
+    UnloadRenderTexture(target);
     return 0;
 }
