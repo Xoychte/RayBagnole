@@ -19,7 +19,10 @@ typedef struct wheels {
     float RwheelWidth;
     Vector2 RwheelCenter;
     float RaxleMass;
+
     bool drifting;
+    Vector2 prevLeftDrift;
+    Vector2 prevRightDrift;
 
 } wheels;
 
@@ -64,6 +67,6 @@ car* create_le_car(int,int);
 void camera_follow(car* car, Camera2D* camera);
 float get_speedometer(const car* car);
 void shift_gears(car* car);
-void show_drifting(const car* car,RenderTexture2D*);
+void show_drifting(car* car,const RenderTexture2D*);
 
 #endif //CAR_H

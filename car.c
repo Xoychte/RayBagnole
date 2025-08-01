@@ -154,6 +154,8 @@ car* create_le_car(int screenHeight, int screenWidth) {
     car->wheels.RwheelRadius = 13;
     car->relativePositions.CtorLw = (Vector2){-35,-30};
     car->wheels.drifting = false;
+    car->wheels.prevLeftDrift = (Vector2){-1,-1};
+    car->wheels.prevRightDrift = (Vector2){-1,-1};
 
     float wheelBaseLength = (float)fabsf(car->relativePositions.CtofLw.x - car->relativePositions.CtorLw.x);
     printf("Car length %f m \n",wheelBaseLength/20.f); //20 pxl equals a meter currently
@@ -181,13 +183,31 @@ void shift_gears(car* car) {
     }
 }
 
-void show_drifting(const car* car,RenderTexture2D* texture) {
+void show_drifting(car* car,const RenderTexture2D* texture) {
     if (car->wheels.drifting) {
         //We start by computing the rear right tire center since we only have the left one
         Vector2 RwheelCenterRight = Vector2Add(Vector2Rotate((Vector2){0,-2 * car->relativePositions.CtorLw.y},car->angle),car->wheels.RwheelCenter);
-        BeginTextureMode(*texture);
-        DrawCircle((int)car->wheels.RwheelCenter.x,(int)car->wheels.RwheelCenter.y,3,DARKGRAY);
-        DrawCircle((int)RwheelCenterRight.x + 2,(int)RwheelCenterRight.y,3,DARKGRAY);
-        EndTextureMode();
+
+        //If the car wasn't drifting at the previous frame
+        if (Vector2Equals(car->wheels.prevLeftDrift,(Vector2){-1,-1}) && Vector2Equals(car->wheels.prevRightDrift,(Vector2){-1,-1})) {
+            BeginTextureMode(*texture);
+            DrawCircle((int)car->wheels.RwheelCenter.x,(int)car->wheels.RwheelCenter.y,3,DARKGRAY);
+            DrawCircle((int)RwheelCenterRight.x + 2,(int)RwheelCenterRight.y,3,DARKGRAY);
+            EndTextureMode();
+
+        } else { //The car was drifting last frame
+            BeginTextureMode(*texture);
+            DrawLineEx(car->wheels.RwheelCenter,car->wheels.prevLeftDrift,5,DARKGRAY);
+            DrawLineEx(RwheelCenterRight,car->wheels.prevRightDrift,5,DARKGRAY);
+            EndTextureMode();
+        }
+
+
+        //Update the previous positions the wheels drifted
+        car->wheels.prevLeftDrift = car->wheels.RwheelCenter;
+        car->wheels.prevRightDrift = RwheelCenterRight;
+    } else {
+        car->wheels.prevLeftDrift = (Vector2){-1,-1};
+        car->wheels.prevRightDrift = (Vector2){-1,-1};
     }
 }
