@@ -127,7 +127,7 @@ Vector2 compute_lateral_force(car* car) {
     //Rear axle
     const float RearSlipAngle = radian_to_degree(Vector2Angle(car->mechanics.speed,facing));
 
-    if (fabsf(RearSlipAngle) > 40.f && Vector2Length(car->mechanics.speed) > 500.f) {
+    if (fabsf(RearSlipAngle) > 40.f && Vector2Length(car->mechanics.speed) > 500.f) { //TODO make it also work in reverse/driving backwards
         car->wheels.drifting = true;
     } else {
         car->wheels.drifting = false;
