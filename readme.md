@@ -9,8 +9,11 @@ The goal is to make an enjoyable "easy to learn, hard to master" 2D top-down rac
 ## Playing 
 
 Azerty -> Z , Qwerty -> W - accelerate \
-S - brake (no reverse gear currently) \
-Azerty Q/S , Qwerty A/D - steer 
+S or space - brake  \
+Azerty Q/S , Qwerty A/D - steer \
+Up/Down arrows - shift gears
+
+
 
 Enter - flip the car (rotate 180° instantly)
 

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.29)
 project(RayBagnole C)
 
 # Set C standard
-set(CMAKE_C_STANDARD 23)
+set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # First try to find installed Raylib

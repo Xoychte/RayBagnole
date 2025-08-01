@@ -18,7 +18,7 @@ int main(void) {
     */
     InitWindow(0, 0, "RayBagnole");
 
-    const int FPS = 120;
+    const int FPS = 200;
     SetTargetFPS(FPS);
     //Remove the following for web
 
@@ -76,7 +76,7 @@ int main(void) {
             car->angle += 3.14f;
         }
         if (IsKeyUp(KEY_A) && IsKeyUp(KEY_D)) {
-            if (fabs(car->wheels.FwheelAngle) <= 0.1f) {
+            if (fabsf(car->wheels.FwheelAngle) <= 0.1f) {
                 car->wheels.FwheelAngle = 0.f;
             } else {
                 car->wheels.FwheelAngle /= 1.3f;
@@ -127,6 +127,9 @@ int main(void) {
         if (car->mechanics.gear == -1) {
             DrawTextEx(GetFontDefault(), "R",
                Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 200}), 55, 2, BLACK);
+        } else if (car->mechanics.gear == 0) {
+            DrawTextEx(GetFontDefault(), "N",
+              Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 200}), 55, 2, BLACK);
         } else {
             DrawTextEx(GetFontDefault(), TextFormat("%d", car->mechanics.gear),
                Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 200}), 55, 2, BLACK);

@@ -7,7 +7,7 @@
 #include "car.h"
 float radian_to_degree(float radian);
 float degree_to_radian(float degree);
-Vector2 compute_drag(car*, const float);
+Vector2 compute_drag(const car*, const float);
 Vector2 compute_rolling_resistance(car*, const float);
 Vector2 compute_traction(const car*);
 Vector2 compute_traction_v2 (const car*,int);

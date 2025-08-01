@@ -186,8 +186,8 @@ void show_drifting(const car* car,RenderTexture2D* texture) {
         //We start by computing the rear right tire center since we only have the left one
         Vector2 RwheelCenterRight = Vector2Add(Vector2Rotate((Vector2){0,-2 * car->relativePositions.CtorLw.y},car->angle),car->wheels.RwheelCenter);
         BeginTextureMode(*texture);
-        DrawCircle((int)car->wheels.RwheelCenter.x,(int)car->wheels.RwheelCenter.y,3,BLACK);
-        DrawCircle((int)RwheelCenterRight.x + 2,(int)RwheelCenterRight.y,3,BLACK);
+        DrawCircle((int)car->wheels.RwheelCenter.x,(int)car->wheels.RwheelCenter.y,3,DARKGRAY);
+        DrawCircle((int)RwheelCenterRight.x + 2,(int)RwheelCenterRight.y,3,DARKGRAY);
         EndTextureMode();
     }
 }
