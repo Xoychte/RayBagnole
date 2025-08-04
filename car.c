@@ -143,6 +143,7 @@ car* create_le_car(int screenHeight, int screenWidth) {
     car->mechanics.mass = 1473; //kg
     car->mechanics.engineRPM = 0;
     car->mechanics.gear = 0;
+    car->mechanics.maxRPM = 6300;
 
     car->wheels.FwheelWidth = 13;
     car->wheels.FwheelAngle = 0;
@@ -210,4 +211,25 @@ void show_drifting(car* car,const RenderTexture2D* texture) {
         car->wheels.prevLeftDrift = (Vector2){-1,-1};
         car->wheels.prevRightDrift = (Vector2){-1,-1};
     }
+}
+
+void show_tachometer(const car* car,const Camera2D* cam,const int screenWidth,const int screenHeight) {
+    int ratio = (int)(((float)car->mechanics.engineRPM / (float)car->mechanics.maxRPM) * 7.f);
+    Color col = SKYBLUE;
+    if (ratio > 3) {
+        col = GOLD;
+    } if (ratio > 5) {
+        col = RED;
+    }
+
+    if (car->mechanics.engineRPM > car->mechanics.maxRPM) {
+        col = (Color){ 150, 11, 18, 255 };
+    }
+    for (int i = 0; i < ratio; i++) {
+        DrawCircleV(Vector2Add(cam->target,(Vector2){(float)( (i - 3)*60),(float)screenHeight/2 - 140}),20,col);
+    }
+
+    DrawTextEx(GetFontDefault(), TextFormat("%d", car->mechanics.engineRPM),
+        Vector2Add(cam->target,(Vector2){-380.f, (float)screenHeight/2 - 150}), 55, 2, col);
+
 }

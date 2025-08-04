@@ -73,7 +73,7 @@ Vector2 compute_traction(const car* car) {
         breaking = Vector2Scale(car->mechanics.speed,(-1)*CBRAKE);
     }
     if (IsKeyDown(KEY_W)) {
-        if (car->mechanics.engineRPM < 6300) {
+        if (car->mechanics.engineRPM < car->mechanics.maxRPM) {
             traction = compute_traction_v2(car,car->mechanics.gear);
         } else { //Hit the rev limiter
             traction = Vector2Zero();

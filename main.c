@@ -135,12 +135,14 @@ int main(void) {
                Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 200}), 55, 2, BLACK);
         }
 
-        DrawTextEx(GetFontDefault(), TextFormat("%d", car->mechanics.engineRPM),
-        Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 400}), 55, 2, BLACK);
+        show_tachometer(car,&camera,ScreenWidth,ScreenHeight);
+
 
         camera_follow(car,&camera);
 
         show_drifting(car,&target);
+
+
 
         EndMode2D();
         EndDrawing();
