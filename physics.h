@@ -21,5 +21,6 @@ float get_front_weight_ratio(car*);
 float get_rear_weight_ratio(car*);
 void apply_acceleration(car*, int);
 void update_position(car*,int);
+int get_rpm_from_speed(car*);
 
 #endif //PHYSICS_H

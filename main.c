@@ -135,7 +135,8 @@ int main(void) {
                Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 200}), 55, 2, BLACK);
         }
 
-
+        DrawTextEx(GetFontDefault(), TextFormat("%d", car->mechanics.engineRPM),
+        Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 400}), 55, 2, BLACK);
 
         camera_follow(car,&camera);
 
@@ -149,6 +150,7 @@ int main(void) {
         compute_acceleration(car);
         apply_acceleration(car,currentFPS);
         update_position(car,currentFPS);
+        int rpm = get_rpm_from_speed(car);
 
 
 
