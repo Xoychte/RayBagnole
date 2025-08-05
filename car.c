@@ -177,16 +177,16 @@ float get_speedometer(const car* car) {
 }
 
 void shift_gears(car* car) {
-    if (IsKeyPressed(KEY_UP) && car->mechanics.gear < 6) {
+    if ((IsKeyPressed(KEY_UP) || car->mechanics.engineRPM >= car->mechanics.maxRPM) && car->mechanics.gear < 6) {
         car->mechanics.gear++;
-    } else if (IsKeyPressed(KEY_DOWN) && car->mechanics.gear > -1) {
+    } else if ((IsKeyPressed(KEY_DOWN) && car->mechanics.gear > -1) || (car->mechanics.gear > 1 && car->mechanics.engineRPM <= 2500)) {
         car->mechanics.gear--;
     }
 }
 
 void show_drifting(car* car,const RenderTexture2D* texture) {
     if (car->wheels.drifting) {
-        //We start by computing the rear right tire center since we only have the left one
+        //start by computing the rear right tire center since we only have the left one
         Vector2 RwheelCenterRight = Vector2Add(Vector2Rotate((Vector2){0,-2 * car->relativePositions.CtorLw.y},car->angle),car->wheels.RwheelCenter);
 
         //If the car wasn't drifting at the previous frame

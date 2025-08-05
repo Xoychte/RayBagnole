@@ -11,17 +11,18 @@
 int main(void) {
     printf("Starting le game\n");
 
-    //Add the following for web
+    //for web
     /*
     const int ScreenWidth = 1600;
     const int ScreenHeight = 900;
-    */
-    InitWindow(0, 0, "RayBagnole");
 
+    InitWindow(ScreenWidth, ScreenHeight, "RayBagnole");
+    */
     const int FPS = 200;
     SetTargetFPS(FPS);
-    //Remove the following for web
+    //for dektop
 
+    InitWindow(0,0,"RayBagnole");
     int m = GetCurrentMonitor();
     const int ScreenWidth = GetMonitorWidth(m);
     const int ScreenHeight = GetMonitorHeight(m);
@@ -37,7 +38,7 @@ int main(void) {
 
 
     //Testing background
-    Image bcg = LoadImage("C:/Users/gabri/Desktop/RayBagnole/testmap.png");
+    Image bcg = LoadImage("testmap.png");
     if (!IsImageValid(bcg)) {
         printf("Image is not valid\n");
         return 1;
@@ -58,17 +59,21 @@ int main(void) {
     while (!WindowShouldClose()) {
         compute_body_positions(car);
 
+        int currentFPS = GetFPS();
+        if (currentFPS == 0) { //Prevent dividing by zero
+                currentFPS = FPS;
+        }
         //Handling imputs
         if (IsKeyDown(KEY_A)) {
-            car->angle -= 0.05f * 60/(float)FPS;
+            car->angle -= 0.05f * 60/(float)currentFPS;
             if (car->wheels.FwheelAngle > -0.6f) {
-                car->wheels.FwheelAngle -= 0.05f * 60/(float)FPS;
+                car->wheels.FwheelAngle -= 0.05f * 60/(float)currentFPS;
             }
         }
         if (IsKeyDown(KEY_D)) {
-            car->angle += 0.05f * 60/(float)FPS;
+            car->angle += 0.05f * 60/(float)currentFPS;
             if (car->wheels.FwheelAngle < 0.6f) {
-                car->wheels.FwheelAngle += 0.05f * 60/(float)FPS;
+                car->wheels.FwheelAngle += 0.05f * 60/(float)currentFPS;
             }
         }
 
@@ -79,16 +84,13 @@ int main(void) {
             if (fabsf(car->wheels.FwheelAngle) <= 0.1f) {
                 car->wheels.FwheelAngle = 0.f;
             } else {
-                car->wheels.FwheelAngle /= 1.3f;
+                car->wheels.FwheelAngle /= 1.2f / (200.f/(float)currentFPS);
             }
 
         }
         shift_gears(car);
 
-        int currentFPS = GetFPS();
-        if (currentFPS == 0) { //Prevent dividing by zero
-            currentFPS = 1;
-        }
+
 
 
 
@@ -123,7 +125,7 @@ int main(void) {
         DrawTextEx(GetFontDefault(), TextFormat("%.1f km/h", get_speedometer(car)),
                 Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 140}), 55, 2, BLACK);
 
-
+        //TODO refactor these in a draw_ui function
         if (car->mechanics.gear == -1) {
             DrawTextEx(GetFontDefault(), "R",
                Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 200}), 55, 2, BLACK);
