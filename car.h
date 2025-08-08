@@ -68,6 +68,7 @@ car* create_le_car(int,int);
 void camera_follow(car* car, Camera2D* camera);
 float get_speedometer(const car* car);
 void shift_gears(car* car);
+void shift_automatic(car* car);
 void show_drifting(car* car,const RenderTexture2D*);
 void show_tachometer(const car* car,const Camera2D* cam,const int,const int);
 

@@ -177,9 +177,17 @@ float get_speedometer(const car* car) {
 }
 
 void shift_gears(car* car) {
-    if ((IsKeyPressed(KEY_UP) || car->mechanics.engineRPM >= car->mechanics.maxRPM) && car->mechanics.gear < 6) {
+    if (IsKeyPressed(KEY_UP) && car->mechanics.gear < 6) {
         car->mechanics.gear++;
-    } else if ((IsKeyPressed(KEY_DOWN) && car->mechanics.gear > -1) || (car->mechanics.gear > 1 && car->mechanics.engineRPM <= 2500)) {
+    } else if (IsKeyPressed(KEY_DOWN) && car->mechanics.gear > -1) {
+        car->mechanics.gear--;
+    }
+}
+
+void shift_automatic(car* car) {
+    if (car->mechanics.engineRPM >= car->mechanics.maxRPM && car->mechanics.gear >= 0 && car->mechanics.gear < 6) {
+        car->mechanics.gear++;
+    } else if (car->mechanics.gear > 1 && car->mechanics.engineRPM <= 2500) {
         car->mechanics.gear--;
     }
 }

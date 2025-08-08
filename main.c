@@ -89,6 +89,7 @@ int main(void) {
 
         }
         shift_gears(car);
+        shift_automatic(car);
 
 
 
