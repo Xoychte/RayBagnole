@@ -11,4 +11,5 @@
 Vector2 vector_from_points(Vector2 origin, Vector2 destination);
 Vector2 symmetric_and_rotate(Vector2 vec,float angle);
 void draw_vect_at_car_center(car*,Vector2,Color);
+float multiply(Vector2,Vector2);
 #endif //VECTUTILS_H

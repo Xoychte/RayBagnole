@@ -47,6 +47,8 @@ typedef struct mechanics {
     int engineRPM;
     int maxRPM;
     int gear;
+    float rotationSpeed;
+    float rotationAcceleration;
 } mechanics;
 
 typedef struct car {

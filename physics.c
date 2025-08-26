@@ -4,6 +4,8 @@
 
 #include "physics.h"
 
+#include <io.h>
+
 
 #include "raylib.h"
 #include "raymath.h"
@@ -57,8 +59,20 @@ Vector2 compute_rolling_resistance(car* car, const float Crr) {
     const Vector2 FwheelUnit = Vector2Normalize(Vector2Rotate(facing,car->wheels.FwheelAngle));
     const Vector2 RolResFront =Vector2Scale(FwheelUnit,(-1)*Crr*get_front_weight_ratio(car)*Vector2DotProduct(FwheelUnit,car->mechanics.speed));
 
+    //moment of RolResFront (rear moment is 0)
+    Vector2 FaxleCenter = Vector2Add(car->centerPos,Vector2Rotate((Vector2){car->relativePositions.CtofLw.x,0},car->angle));
+    float RolResFrontM = compute_moment(car,RolResFront,FaxleCenter);
+    car->mechanics.rotationAcceleration -= RolResFrontM;
 
     return Vector2Add(RolResRear,RolResFront);
+}
+
+
+/*
+ * Slows the car rotation because of the tires/air resistance
+ */
+void rotation_resistance(car* car) {
+    car->mechanics.rotationSpeed *= 0.9f;
 }
 
 /*
@@ -125,12 +139,12 @@ Vector2 compute_lateral_force(car* car) {
     const float Ff = simplified_magic_formula(10.f,1.3f,1.f,0.97f,FrontSlipAngle,FrontLoad); //Value in Newtons
 
     const Vector2 FwheelOrtho = Vector2Rotate(FwheelUnit,PI/2);
-    const Vector2 FfVec = Vector2Scale(FwheelOrtho,Ff);
+    Vector2 FfVec = Vector2Scale(FwheelOrtho,Ff);
 
     //Rear axle
     const float RearSlipAngle = radian_to_degree(Vector2Angle(car->mechanics.speed,facing));
     const float DriftAngle = fminf(fabsf(RearSlipAngle),fabsf(radian_to_degree(Vector2Angle(car->mechanics.speed,Vector2Rotate(facing,PI)))));
-    if (fabsf(DriftAngle) > 40.f && Vector2Length(car->mechanics.speed) > 500.f) { //TODO make it also work in reverse/driving backwards
+    if (fabsf(DriftAngle) > 20.f && Vector2Length(car->mechanics.speed) > 500.f) {
         car->wheels.drifting = true;
     } else {
         car->wheels.drifting = false;
@@ -140,10 +154,25 @@ Vector2 compute_lateral_force(car* car) {
     const float Rf = simplified_magic_formula(10.f,1.3f,1.f,0.97f,RearSlipAngle,RearLoad);
 
     const Vector2 RwheelOrtho = Vector2Rotate(facing,PI/2);
-    const Vector2 RfVec = Vector2Scale(RwheelOrtho,Rf);
+    Vector2 RfVec = Vector2Scale(RwheelOrtho,Rf);
+
+
+
+    //Should be refactored elsewhere but we compute moments of both parts here to add to rotAccel
+
+    Vector2 FaxleCenter = Vector2Add(car->centerPos,(Vector2){car->relativePositions.CtofLw.x,0});
+    Vector2 RaxleCenter = Vector2Add(car->centerPos,(Vector2){car->relativePositions.CtorLw.x,0});
+
+    float FfvecM = compute_moment(car,FfVec,FaxleCenter);
+    float RfVecM = compute_moment(car,RfVec,RaxleCenter);
+
+    //car->mechanics.rotationAcceleration += RfVecM + FfvecM;
+
+    FfVec = Vector2Scale(FfVec,200);
+    RfVec = Vector2Scale(RfVec,200);
 
     const Vector2 res = Vector2Add(FfVec,RfVec);
-    return Vector2Scale(res,200);
+    return res;
 }
 /*
 Computes lateral forces with a simplified "magic" Pacejka formula
@@ -153,17 +182,29 @@ float simplified_magic_formula (float stiffness, float shape, float peak, float 
 }
 
 /*
-Returns acceleration as a 2D vector using Newton's 2nd law
-!!! also changes the car's acceleration vector in its mechanics
+ changes the car's acceleration vector in its mechanics using 2nd law
+
  */
-Vector2 compute_acceleration(car* car) {
+void compute_acceleration(car* car) {
+    car->mechanics.rotationAcceleration = 0;
+
     Vector2 acceleration = compute_traction(car);
-    acceleration = Vector2Add(acceleration,compute_drag(car,CDRAG));
-    acceleration = Vector2Add(acceleration,compute_rolling_resistance(car,CRR));
-    acceleration = Vector2Add(acceleration,compute_lateral_force(car));
+
+    Vector2 drag = compute_drag(car,CDRAG);
+    acceleration = Vector2Add(acceleration,drag);
+
+    Vector2 rollingResistance = compute_rolling_resistance(car,CRR);
+    acceleration = Vector2Add(acceleration,rollingResistance);
+
+    Vector2 lateralForce = compute_lateral_force(car);
+    acceleration = Vector2Add(acceleration,lateralForce);
+
     acceleration = Vector2Scale(acceleration,1/(car->mechanics.mass)); //Mass shouldn't be zero
     car->mechanics.acceleration = acceleration;
-    return acceleration;
+
+    rotation_resistance(car);
+    car->mechanics.rotationAcceleration *= 1/car->mechanics.mass;
+
 }
 
 /*
@@ -188,19 +229,24 @@ float get_rear_weight_ratio(car* car) {
 /*
 Changes the car's speed vector based on its acceleration and framerate
 Also calls update_weight_distrib with said acceleration
+Changes the rotation speed with rotational acceleration
  */
 void apply_acceleration(car* car, int framerate) {
     car->mechanics.speed = Vector2Add(car->mechanics.speed,
                                     Vector2Scale(car->mechanics.acceleration,(1 / (float)framerate)));
+
+    car->mechanics.rotationSpeed += car->mechanics.rotationAcceleration * (1/(float)framerate);
     //update_weight_distrib(car);
 }
 
 /*
 Changes the car's position based on it's speed
+also rotates the car with its rotational speed
  */
 void update_position(car* car, int framerate) {
     Vector2 delta = Vector2Scale(car->mechanics.speed,(1 / (float)framerate));
     car->centerPos = Vector2Add(car->centerPos,delta);
+    car->angle += car->mechanics.rotationSpeed * (1/(float)framerate);
 }
 
 /*
@@ -213,4 +259,8 @@ int get_rpm_from_speed(car* car) {
     car->mechanics.engineRPM = rpm;
     return rpm;
 
+}
+
+float compute_moment(const car* car,Vector2 force, Vector2 application) {
+    return (-1) * multiply(force,Vector2Subtract(application,car->centerPos));
 }

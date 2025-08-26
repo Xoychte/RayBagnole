@@ -19,3 +19,7 @@ Vector2 symmetric_and_rotate (Vector2 vec, float angle) {
 void draw_vect_at_car_center (car* car, Vector2 vec,Color color) {
     DrawLineV(car->centerPos,Vector2Add(car->centerPos,vec),color);
 }
+
+float multiply(Vector2 a, Vector2 b) {
+    return Vector2Length(a) * Vector2Length(b) * sin(Vector2Angle(a,b));
+}

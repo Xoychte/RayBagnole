@@ -103,7 +103,7 @@ void display_body(const car* car) {
     const Vector2 fr = car->body.frontRight;
     const Vector2 br = car->body.rearRight;
     const Vector2 bl = car->body.rearLeft;
-    //const Vector2 c = car->centerPos;
+    const Vector2 c = car->centerPos;
 
 
     DrawLineV(fl,fr,BLACK);
@@ -111,9 +111,9 @@ void display_body(const car* car) {
     DrawLineV(fr,br,BLACK);
 
     DrawLineV(fl,bl,BLACK);
-    //DrawLineV(c,fl,RED);
 
-    //DrawPixelV(c,MAGENTA);
+
+    DrawPixelV(c,MAGENTA);
 
 
 }
@@ -144,6 +144,7 @@ car* create_le_car(int screenHeight, int screenWidth) {
     car->mechanics.engineRPM = 0;
     car->mechanics.gear = 0;
     car->mechanics.maxRPM = 6300;
+    car->mechanics.rotationSpeed = 0.f;
 
     car->wheels.FwheelWidth = 13;
     car->wheels.FwheelAngle = 0;
@@ -185,7 +186,7 @@ void shift_gears(car* car) {
 }
 
 void shift_automatic(car* car) {
-    if (car->mechanics.engineRPM >= car->mechanics.maxRPM && car->mechanics.gear >= 0 && car->mechanics.gear < 6) {
+    if (car->mechanics.engineRPM >= car->mechanics.maxRPM && car->mechanics.gear >= 0 && car->mechanics.gear < 6 && car->wheels.drifting == false) {
         car->mechanics.gear++;
     } else if (car->mechanics.gear > 1 && car->mechanics.engineRPM <= 2500) {
         car->mechanics.gear--;
