@@ -7,6 +7,7 @@
 #include "physics.h"
 #include "rlgl.h"
 
+typedef enum GameScreen {DRIVING = 0,BUILD} GameScreen;
 
 int main(void) {
     printf("Starting le game\n");
@@ -27,6 +28,8 @@ int main(void) {
     const int ScreenWidth = GetMonitorWidth(m);
     const int ScreenHeight = GetMonitorHeight(m);
     printf("Screen size: %dx%d\n", ScreenWidth, ScreenHeight);
+
+    GameScreen screen = DRIVING;
 
     car* car = create_le_car(ScreenHeight, ScreenWidth);
 
@@ -57,108 +60,128 @@ int main(void) {
 
     printf("Entering main loop\n");
     while (!WindowShouldClose()) {
-        compute_body_positions(car);
+        switch (screen) {
+            case DRIVING: {
+                compute_body_positions(car);
+                int currentFPS = GetFPS();
+                if (currentFPS == 0) { //Prevent dividing by zero
+                    currentFPS = FPS;
+                }
+                //Handling inputs
+                if (IsKeyDown(KEY_A)) {
+                    if (car->wheels.FwheelAngle > -0.3f) {
+                        car->wheels.FwheelAngle -= 0.02f * 60/(float)currentFPS;
+                    }
+                }
+                if (IsKeyDown(KEY_D)) {
+                    if (car->wheels.FwheelAngle < 0.3f) {
+                        car->wheels.FwheelAngle += 0.02f * 60/(float)currentFPS;
+                    }
+                }
 
-        int currentFPS = GetFPS();
-        if (currentFPS == 0) { //Prevent dividing by zero
-                currentFPS = FPS;
+                if (IsKeyPressed(KEY_R)) {
+                    car->centerPos = Vector2Zero();
+                    car->angle = 0.f;
+                }
+                if (IsKeyUp(KEY_A) && IsKeyUp(KEY_D)) {
+                    if (fabsf(car->wheels.FwheelAngle) <= 0.1f) {
+                        car->wheels.FwheelAngle = 0.f;
+                    } else {
+                        car->wheels.FwheelAngle -= 0.03f * (car->wheels.FwheelAngle/fabsf(car->wheels.FwheelAngle))* 200/(float)currentFPS ;
+                    }
+
+                }
+
+                if (IsKeyPressed(KEY_TAB)) {
+                    screen = BUILD;
+                }
+                shift_gears(car);
+                shift_automatic(car);
+
+
+
+
+
+                //Handling display
+                BeginDrawing();
+                BeginMode2D(camera);
+
+
+
+                ClearBackground(RAYWHITE);
+                DrawTexture(background,0,0,WHITE);
+                DrawTextureRec(target.texture, (Rectangle) { 0, 0, (float)target.texture.width, (float)-target.texture.height }, (Vector2) { 0, 0 }, WHITE);
+
+
+
+                rlPushMatrix();
+                rlTranslatef(0, 25*50, 0);
+                rlRotatef(90, 1, 0, 0);
+                DrawGrid(100, 50);
+                rlPopMatrix();
+
+
+                display_body(car);
+                display_wheels(car);
+
+
+
+                //Draw the UI to follow the camera
+
+                DrawFPS((int)camera.target.x - ScreenWidth/ 2 + 20, (int)camera.target.y - ScreenHeight/2 + 20);
+
+                DrawTextEx(GetFontDefault(), TextFormat("%.1f km/h", get_speedometer(car)),
+                        Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 140}), 55, 2, BLACK);
+
+                //TODO refactor these in a draw_ui function
+                if (car->mechanics.gear == -1) {
+                    DrawTextEx(GetFontDefault(), "R",
+                       Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 200}), 55, 2, BLACK);
+                } else if (car->mechanics.gear == 0) {
+                    DrawTextEx(GetFontDefault(), "N",
+                      Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 200}), 55, 2, BLACK);
+                } else {
+                    DrawTextEx(GetFontDefault(), TextFormat("%d", car->mechanics.gear),
+                       Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 200}), 55, 2, BLACK);
+                }
+
+                //test
+                DrawTextEx(GetFontDefault(), TextFormat("%.1f rad/s", car->mechanics.rotationSpeed),
+                    Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 300}), 55, 2, BLACK);
+
+                show_tachometer(car,&camera,ScreenWidth,ScreenHeight);
+
+
+                camera_follow(car,&camera);
+
+                show_drifting(car,&target);
+
+                EndMode2D();
+                EndDrawing();
+
+                //Updating forces and positions
+
+                compute_acceleration(car);
+                apply_acceleration(car,currentFPS);
+                update_position(car,currentFPS);
+                int rpm = get_rpm_from_speed(car);
+            } break;
+
+            case BUILD: {
+                if (IsKeyPressed(KEY_TAB)) {
+                    screen = DRIVING;
+                }
+
+
+
+                BeginDrawing();
+                ClearBackground(RAYWHITE);
+                DrawText("BUILDING SCREEN", 20, 20, 40, MAROON);
+                EndDrawing();
+
+            }break;
+            default:exit(EXIT_FAILURE);
         }
-        //Handling inputs
-        if (IsKeyDown(KEY_A)) {
-            if (car->wheels.FwheelAngle > -0.3f) {
-                car->wheels.FwheelAngle -= 0.02f * 60/(float)currentFPS;
-            }
-        }
-        if (IsKeyDown(KEY_D)) {
-            if (car->wheels.FwheelAngle < 0.3f) {
-                car->wheels.FwheelAngle += 0.02f * 60/(float)currentFPS;
-            }
-        }
-
-        if (IsKeyPressed(KEY_R)) {
-            car->centerPos = Vector2Zero();
-            car->angle = 0.f;
-        }
-        if (IsKeyUp(KEY_A) && IsKeyUp(KEY_D)) {
-            if (fabsf(car->wheels.FwheelAngle) <= 0.1f) {
-                car->wheels.FwheelAngle = 0.f;
-            } else {
-                car->wheels.FwheelAngle -= 0.03f * (car->wheels.FwheelAngle/fabsf(car->wheels.FwheelAngle))* 200/(float)currentFPS ;
-            }
-
-        }
-        shift_gears(car);
-        shift_automatic(car);
-
-
-
-
-
-        //Handling display
-        BeginDrawing();
-        BeginMode2D(camera);
-
-
-
-        ClearBackground(RAYWHITE);
-        DrawTexture(background,0,0,WHITE);
-        DrawTextureRec(target.texture, (Rectangle) { 0, 0, (float)target.texture.width, (float)-target.texture.height }, (Vector2) { 0, 0 }, WHITE);
-
-
-
-        rlPushMatrix();
-        rlTranslatef(0, 25*50, 0);
-        rlRotatef(90, 1, 0, 0);
-        DrawGrid(100, 50);
-        rlPopMatrix();
-
-
-        display_body(car);
-        display_wheels(car);
-
-
-
-        //Draw the UI to follow the camera
-
-        DrawFPS((int)camera.target.x - ScreenWidth/ 2 + 20, (int)camera.target.y - ScreenHeight/2 + 20);
-
-        DrawTextEx(GetFontDefault(), TextFormat("%.1f km/h", get_speedometer(car)),
-                Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 140}), 55, 2, BLACK);
-
-        //TODO refactor these in a draw_ui function
-        if (car->mechanics.gear == -1) {
-            DrawTextEx(GetFontDefault(), "R",
-               Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 200}), 55, 2, BLACK);
-        } else if (car->mechanics.gear == 0) {
-            DrawTextEx(GetFontDefault(), "N",
-              Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 200}), 55, 2, BLACK);
-        } else {
-            DrawTextEx(GetFontDefault(), TextFormat("%d", car->mechanics.gear),
-               Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 200}), 55, 2, BLACK);
-        }
-
-        //test
-            DrawTextEx(GetFontDefault(), TextFormat("%.1f rad/s", car->mechanics.rotationSpeed),
-                Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 300}), 55, 2, BLACK);
-
-        show_tachometer(car,&camera,ScreenWidth,ScreenHeight);
-
-
-        camera_follow(car,&camera);
-
-        show_drifting(car,&target);
-
-        EndMode2D();
-        EndDrawing();
-
-        //Updating forces and positions
-
-        compute_acceleration(car);
-        apply_acceleration(car,currentFPS);
-        update_position(car,currentFPS);
-        int rpm = get_rpm_from_speed(car);
-
-
 
     }
 
