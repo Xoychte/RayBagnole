@@ -65,15 +65,13 @@ int main(void) {
         }
         //Handling inputs
         if (IsKeyDown(KEY_A)) {
-            //car->angle -= 0.05f * 60/(float)currentFPS;
-            if (car->wheels.FwheelAngle > -0.6f) {
-                car->wheels.FwheelAngle -= 0.05f * 60/(float)currentFPS;
+            if (car->wheels.FwheelAngle > -0.3f) {
+                car->wheels.FwheelAngle -= 0.02f * 60/(float)currentFPS;
             }
         }
         if (IsKeyDown(KEY_D)) {
-            //car->angle += 0.05f * 60/(float)currentFPS;
-            if (car->wheels.FwheelAngle < 0.6f) {
-                car->wheels.FwheelAngle += 0.05f * 60/(float)currentFPS;
+            if (car->wheels.FwheelAngle < 0.3f) {
+                car->wheels.FwheelAngle += 0.02f * 60/(float)currentFPS;
             }
         }
 
@@ -140,7 +138,7 @@ int main(void) {
         }
 
         //test
-        DrawTextEx(GetFontDefault(), TextFormat("%.1f rad/s", car->mechanics.rotationSpeed),
+            DrawTextEx(GetFontDefault(), TextFormat("%.1f rad/s", car->mechanics.rotationSpeed),
                 Vector2Add(camera.target,(Vector2){(float)ScreenWidth/2 - 300, (float)ScreenHeight/2 - 300}), 55, 2, BLACK);
 
         show_tachometer(car,&camera,ScreenWidth,ScreenHeight);
