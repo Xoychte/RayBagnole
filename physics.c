@@ -13,7 +13,7 @@
 #include "vectUtils.h"
 
 //these constants will need finetuning to work
-#define CDRAG  0.4257
+#define CDRAG  0.2257 //Base 0.4257
 #define CRR 12.8
 #define CBRAKE 5000
 #define PI 3.14159265f
@@ -190,12 +190,12 @@ Vector2 compute_lateral_force(car* car) {
 
 
     if (car->wheels.drifting) {
-        FfVec = Vector2Scale(FfVec,50);
-        RfVec = Vector2Scale(RfVec,50);
+        FfVec = Vector2Scale(FfVec,70);
+        RfVec = Vector2Scale(RfVec,70);
 
     } else {
-        FfVec = Vector2Scale(FfVec,150);
-        RfVec = Vector2Scale(RfVec,150);
+        FfVec = Vector2Scale(FfVec,175);
+        RfVec = Vector2Scale(RfVec,175);
     }
 
 

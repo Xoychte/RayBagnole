@@ -23,3 +23,8 @@ void draw_vect_at_car_center (car* car, Vector2 vec,Color color) {
 float multiply(Vector2 a, Vector2 b) {
     return Vector2Length(a) * Vector2Length(b) * sin(Vector2Angle(a,b));
 }
+
+Vector2 symmetric(Vector2 vec) {
+    Vector2 res = (Vector2){vec.x, -vec.y};
+    return res;
+}

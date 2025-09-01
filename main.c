@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "build.h"
 #include "raylib.h"
 #include "car.h"
 #include "raymath.h"
 #include "physics.h"
 #include "rlgl.h"
+#include "vectUtils.h"
 
 typedef enum GameScreen {DRIVING = 0,BUILD} GameScreen;
 
@@ -23,6 +25,7 @@ int main(void) {
     SetTargetFPS(FPS);
     //for dektop
 
+    SetConfigFlags(FLAG_WINDOW_UNDECORATED);
     InitWindow(0,0,"RayBagnole");
     int m = GetCurrentMonitor();
     const int ScreenWidth = GetMonitorWidth(m);
@@ -57,6 +60,19 @@ int main(void) {
     BeginTextureMode(target);
     ClearBackground((Color){ 255, 255, 255, 0 }); //Transparent background
     EndTextureMode();
+
+    //TODO remove this tests for build
+    carBuild* build = (carBuild*)malloc(sizeof(carBuild));
+    if (build == NULL) {
+        printf("Failed to allocate memory for build\n");
+        return 1;
+    }
+    build->isBodySelected = true;
+    Vector2 screenCenter = (Vector2){ (float)ScreenWidth/2.0f, (float)ScreenHeight/2.0f };
+    build->positionFromCenter.Fl = (Vector2){ 200,-150};
+    build->positionFromCenter.Rl = (Vector2){-250,-170};
+    init_bodypos(build,screenCenter);
+
 
     printf("Entering main loop\n");
     while (!WindowShouldClose()) {
@@ -171,12 +187,33 @@ int main(void) {
                 if (IsKeyPressed(KEY_TAB)) {
                     screen = DRIVING;
                 }
+                if (build->isBodySelected) {
+                    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointCircle(GetMousePosition(),build->body.frontLeft,50) && build->body.frontLeft.y < screenCenter.y) {
+                        build->positionFromCenter.Fl = Vector2Add(build->positionFromCenter.Fl,GetMouseDelta());
+                    }
 
+                    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointCircle(GetMousePosition(),build->body.rearLeft,50) && build->body.rearLeft.y < screenCenter.y) {
+                        build->positionFromCenter.Rl = Vector2Add(build->positionFromCenter.Rl,GetMouseDelta());
+                    }
+                }
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                    check_buttons(build);
+                }
 
+                prevent_illegal(build,screenCenter);
+                init_bodypos(build,screenCenter);
 
                 BeginDrawing();
                 ClearBackground(RAYWHITE);
                 DrawText("BUILDING SCREEN", 20, 20, 40, MAROON);
+                DrawText("Forward ->",screenCenter.x - 70, 20, 40, MAROON);
+                DrawCircleV(GetMousePosition(),5,GREEN);
+
+                //Buttons
+                DrawRectangleRec((Rectangle){30,100,100,40},GRAY);
+                DrawText("Body",30,100,40,DARKGRAY);
+
+                draw_body(build);
                 EndDrawing();
 
             }break;

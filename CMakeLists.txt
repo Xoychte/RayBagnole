@@ -38,7 +38,10 @@ add_executable(${PROJECT_NAME} main.c
         vectUtils.c
         vectUtils.h
         physics.c
-        physics.h)
+        physics.h
+        build.c
+        build.h
+)
 
 # Link against Raylib (works for both installed and downloaded versions)
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
