@@ -13,4 +13,6 @@ Vector2 symmetric_and_rotate(Vector2 vec,float angle);
 void draw_vect_at_car_center(car*,Vector2,Color);
 float multiply(Vector2,Vector2);
 Vector2 symmetric(Vector2 vec);
+void draw_rec_from_center(Vector2 center,float width, float height, Color color);
+void draw_rec_lines_v (Vector2 position, Vector2 size, Color color);
 #endif //VECTUTILS_H

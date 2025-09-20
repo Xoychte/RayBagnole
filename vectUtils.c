@@ -4,6 +4,8 @@
 
 #include "vectUtils.h"
 
+#include <stdio.h>
+
 
 #include "raymath.h"
 
@@ -27,4 +29,13 @@ float multiply(Vector2 a, Vector2 b) {
 Vector2 symmetric(Vector2 vec) {
     Vector2 res = (Vector2){vec.x, -vec.y};
     return res;
+}
+
+void draw_rec_from_center(Vector2 center, float width, float heigth, Color color) {
+    Vector2 offset = (Vector2){-width/2, -heigth/2};
+    draw_rec_lines_v(Vector2Add(center,offset),(Vector2){width,heigth},color);
+}
+
+void draw_rec_lines_v (Vector2 position, Vector2 size, Color color) {
+    DrawRectangleLines(position.x, position.y, size.x, size.y, color);
 }

@@ -9,17 +9,33 @@
 typedef struct positionFromCenter {
     Vector2 Fl;
     Vector2 Rl;
+    Vector2 fT; //front tyre
+    Vector2 rT;
 } positionFromCenter;
+
+typedef struct build_wheels {
+    float FwheelRadius;
+    float FwheelWidth;
+    Vector2 Fcenter;
+
+    float RwheelRadius;
+    float RwheelWidth;
+    Vector2 Rcenter;
+
+} build_wheels;
 
 typedef struct carBuild {
     body body;
-    bool isBodySelected;
+    build_wheels wheels;
+    int selection;
+
     positionFromCenter positionFromCenter;
 } carBuild;
 
 
 
 void draw_body(carBuild *build);
+void draw_wheels(carBuild *build);
 void init_bodypos(carBuild *build,Vector2 center);
 void prevent_illegal(carBuild *build,Vector2 center);
 void check_buttons(carBuild *build);

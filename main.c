@@ -67,11 +67,17 @@ int main(void) {
         printf("Failed to allocate memory for build\n");
         return 1;
     }
-    build->isBodySelected = true;
+    build->selection = 0;
     Vector2 screenCenter = (Vector2){ (float)ScreenWidth/2.0f, (float)ScreenHeight/2.0f };
     build->positionFromCenter.Fl = (Vector2){ 200,-150};
     build->positionFromCenter.Rl = (Vector2){-250,-170};
     init_bodypos(build,screenCenter);
+    build->wheels.FwheelRadius = 40.f;
+    build->wheels.RwheelRadius = 40.f;
+    build->wheels.FwheelWidth = 40.f;
+    build->wheels.RwheelWidth = 40.f;
+    build->positionFromCenter.fT = (Vector2){ 150,-140};
+    build->positionFromCenter.rT = (Vector2){-200,-160};
 
 
     printf("Entering main loop\n");
@@ -187,7 +193,7 @@ int main(void) {
                 if (IsKeyPressed(KEY_TAB)) {
                     screen = DRIVING;
                 }
-                if (build->isBodySelected) {
+                if (build->selection == 1) {
                     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointCircle(GetMousePosition(),build->body.frontLeft,50) && build->body.frontLeft.y < screenCenter.y) {
                         build->positionFromCenter.Fl = Vector2Add(build->positionFromCenter.Fl,GetMouseDelta());
                     }
@@ -214,6 +220,7 @@ int main(void) {
                 DrawText("Body",30,100,40,DARKGRAY);
 
                 draw_body(build);
+                draw_wheels(build);
                 EndDrawing();
 
             }break;
