@@ -17,10 +17,12 @@ typedef struct build_wheels {
     float FwheelRadius;
     float FwheelWidth;
     Vector2 Fcenter;
+    Vector2 FcenterSym;
 
     float RwheelRadius;
     float RwheelWidth;
     Vector2 Rcenter;
+    Vector2 RcenterSym;
 
 } build_wheels;
 

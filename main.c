@@ -67,7 +67,7 @@ int main(void) {
         printf("Failed to allocate memory for build\n");
         return 1;
     }
-    build->selection = 0;
+    build->selection = 2;
     Vector2 screenCenter = (Vector2){ (float)ScreenWidth/2.0f, (float)ScreenHeight/2.0f };
     build->positionFromCenter.Fl = (Vector2){ 200,-150};
     build->positionFromCenter.Rl = (Vector2){-250,-170};
@@ -202,6 +202,15 @@ int main(void) {
                         build->positionFromCenter.Rl = Vector2Add(build->positionFromCenter.Rl,GetMouseDelta());
                     }
                 }
+                if (build->selection == 2) {
+                    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointCircle(GetMousePosition(),build->wheels.Fcenter,50)) {
+                        build->positionFromCenter.fT = Vector2Add(build->positionFromCenter.fT,GetMouseDelta());
+                    }
+
+                    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointCircle(GetMousePosition(),build->wheels.Rcenter,50)) {
+                        build->positionFromCenter.rT = Vector2Add(build->positionFromCenter.rT,GetMouseDelta());
+                    }
+                }
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                     check_buttons(build);
                 }
@@ -218,6 +227,9 @@ int main(void) {
                 //Buttons
                 DrawRectangleRec((Rectangle){30,100,100,40},GRAY);
                 DrawText("Body",30,100,40,DARKGRAY);
+
+                DrawRectangleRec((Rectangle){30,160,140,40},GRAY);
+                DrawText("Wheels",30,160,40,DARKGRAY);
 
                 draw_body(build);
                 draw_wheels(build);
