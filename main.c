@@ -78,6 +78,7 @@ int main(void) {
     build->wheels.RwheelWidth = 40.f;
     build->positionFromCenter.fT = (Vector2){ 150,-140};
     build->positionFromCenter.rT = (Vector2){-200,-160};
+    init_bodypos(build,screenCenter);
 
 
     printf("Entering main loop\n");
@@ -190,33 +191,40 @@ int main(void) {
             } break;
 
             case BUILD: {
+                build->updated = false;
                 if (IsKeyPressed(KEY_TAB)) {
                     screen = DRIVING;
                 }
                 if (build->selection == 1) {
                     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointCircle(GetMousePosition(),build->body.frontLeft,50) && build->body.frontLeft.y < screenCenter.y) {
                         build->positionFromCenter.Fl = Vector2Add(build->positionFromCenter.Fl,GetMouseDelta());
+                        build->updated = true;
                     }
 
                     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointCircle(GetMousePosition(),build->body.rearLeft,50) && build->body.rearLeft.y < screenCenter.y) {
                         build->positionFromCenter.Rl = Vector2Add(build->positionFromCenter.Rl,GetMouseDelta());
+                        build->updated = true;
                     }
                 }
                 if (build->selection == 2) {
                     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointCircle(GetMousePosition(),build->wheels.Fcenter,50)) {
                         build->positionFromCenter.fT = Vector2Add(build->positionFromCenter.fT,GetMouseDelta());
+                        build->updated = true;
                     }
 
                     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && CheckCollisionPointCircle(GetMousePosition(),build->wheels.Rcenter,50)) {
                         build->positionFromCenter.rT = Vector2Add(build->positionFromCenter.rT,GetMouseDelta());
+                        build->updated = true;
                     }
                 }
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                     check_buttons(build);
                 }
 
-                prevent_illegal(build,screenCenter);
-                init_bodypos(build,screenCenter);
+                if (build->updated) {
+                    prevent_illegal(build,screenCenter);
+                    init_bodypos(build,screenCenter);
+                }
 
                 BeginDrawing();
                 ClearBackground(RAYWHITE);

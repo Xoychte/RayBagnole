@@ -27,6 +27,7 @@ typedef struct build_wheels {
 } build_wheels;
 
 typedef struct carBuild {
+    bool updated;
     body body;
     build_wheels wheels;
     int selection;
