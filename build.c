@@ -4,6 +4,9 @@
 
 #include "build.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "raymath.h"
 #include "vectUtils.h"
 
@@ -84,4 +87,48 @@ void check_buttons(carBuild* build) {
             build->selection = 2;
         }
     }
+}
+
+car* convert_to_car(carBuild* build,car* car) {
+
+    car->relativePositions.CtoFl = Vector2Scale(build->positionFromCenter.Fl,0.5f);
+    car->relativePositions.FlToRl = Vector2Subtract(Vector2Scale(build->positionFromCenter.Rl,0.5f),Vector2Scale(build->positionFromCenter.Fl,0.5f));
+    car->relativePositions.CtofLw = Vector2Scale(build->positionFromCenter.fT,0.5f);
+    car->relativePositions.CtorLw = Vector2Scale(build->positionFromCenter.rT,0.5f);
+
+    car->body.frontLeft = Vector2Zero();
+    car->body.frontRight = Vector2Zero();
+    car->body.rearRight = Vector2Zero();
+    car->body.rearLeft = Vector2Zero();
+
+    compute_body_positions(car);
+
+    car->wheels.FwheelRadius = build->wheels.FwheelRadius / 2;
+    car->wheels.RwheelRadius = build->wheels.RwheelRadius / 2;
+
+    car->wheels.FwheelWidth = build->wheels.FwheelWidth / 2;
+    car->wheels.RwheelWidth = build->wheels.RwheelWidth / 2;
+
+    car->wheels.FwheelAngle = 0.f;
+    car->wheels.drifting = false;
+
+    car->mechanics.mass = 1200.f;
+    car->mechanics.speed = Vector2Zero();
+    car->mechanics.acceleration = Vector2Zero();
+    car->mechanics.maxRPM = 6300;
+    car->centerPos = Vector2Zero();
+    car->mechanics.rotationAcceleration = 0.f;
+    car->mechanics.rotationSpeed = 0.f;
+
+    car->wheels.prevLeftDrift = (Vector2){-1,-1};
+    car->wheels.prevRightDrift = (Vector2){-1,-1};
+
+    float wheelBaseLength = (float)fabsf(car->relativePositions.CtofLw.x - car->relativePositions.CtorLw.x);
+    printf("Car length %f m \n",wheelBaseLength/20.f); //20 pxl equals a meter currently
+    car->wheels.FaxleMass = (fabsf(car->relativePositions.CtorLw.x) / wheelBaseLength) * car->mechanics.mass;
+    car->wheels.RaxleMass = (fabsf(car->relativePositions.CtofLw.x) / wheelBaseLength) * car->mechanics.mass;
+
+
+    return car;
+
 }

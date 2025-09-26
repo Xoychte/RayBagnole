@@ -42,6 +42,7 @@ void draw_wheels(carBuild *build);
 void init_bodypos(carBuild *build,Vector2 center);
 void prevent_illegal(carBuild *build,Vector2 center);
 void check_buttons(carBuild *build);
+car* convert_to_car(carBuild *build,car* car);
 
 
 #endif //BUILD_H

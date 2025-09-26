@@ -77,6 +77,10 @@ Vector2 compute_rolling_resistance(car* car, const float Crr) {
  * Slows the car rotation because of the tires/air resistance
  */
 void rotation_resistance(car* car) {
+    if (fabsf(car->mechanics.rotationAcceleration) > 200.f * car->mechanics.mass) {
+        printf("Detected too much acceleration\n");
+        car->mechanics.rotationAcceleration *= 200.f * car->mechanics.mass / fabsf(car->mechanics.rotationAcceleration);
+    }
     if (fabsf(car->mechanics.rotationSpeed) < 0.01f) {
         car->mechanics.rotationSpeed = 0.0f;
     } else {

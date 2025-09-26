@@ -32,7 +32,7 @@ int main(void) {
     const int ScreenHeight = GetMonitorHeight(m);
     printf("Screen size: %dx%d\n", ScreenWidth, ScreenHeight);
 
-    GameScreen screen = DRIVING;
+    GameScreen screen = BUILD;
 
     car* car = create_le_car(ScreenHeight, ScreenWidth);
 
@@ -67,7 +67,7 @@ int main(void) {
         printf("Failed to allocate memory for build\n");
         return 1;
     }
-    build->selection = 2;
+    build->selection = 0;
     Vector2 screenCenter = (Vector2){ (float)ScreenWidth/2.0f, (float)ScreenHeight/2.0f };
     build->positionFromCenter.Fl = (Vector2){ 200,-150};
     build->positionFromCenter.Rl = (Vector2){-250,-170};
@@ -219,6 +219,9 @@ int main(void) {
                 }
                 if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
                     check_buttons(build);
+                }
+                if (IsKeyPressed(KEY_SPACE)) {
+                    convert_to_car(build,car);
                 }
 
                 if (build->updated) {
