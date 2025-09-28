@@ -11,14 +11,11 @@ The goal is to make an enjoyable "easy to learn, hard to master" 2D top-down rac
 Azerty -> Z , Qwerty -> W - accelerate \
 S or space - brake  \
 Azerty Q/S , Qwerty A/D - steer \
-Up/Down arrows - shift gears
+Up/Down arrows - shift gears (When driving forward the car goes into automatic transmission)
+Tab - Switch between building and driving
 
+(Building mode only)
+Space - Send the built car into driving
 
-
-Enter - flip the car (rotate 180° instantly)
-
-Arrows \
-Up - upshift
-Down - downshift
 
 More to be added...

@@ -15,22 +15,23 @@ int main(void) {
     printf("Starting le game\n");
 
     //for web
-    /*
+
     const int ScreenWidth = 1600;
     const int ScreenHeight = 900;
 
     InitWindow(ScreenWidth, ScreenHeight, "RayBagnole");
-    */
+
     const int FPS = 200;
     SetTargetFPS(FPS);
     //for dektop
-
+    /*
     SetConfigFlags(FLAG_WINDOW_UNDECORATED);
     InitWindow(0,0,"RayBagnole");
     int m = GetCurrentMonitor();
     const int ScreenWidth = GetMonitorWidth(m);
     const int ScreenHeight = GetMonitorHeight(m);
     printf("Screen size: %dx%d\n", ScreenWidth, ScreenHeight);
+    */
 
     GameScreen screen = BUILD;
 
@@ -69,15 +70,15 @@ int main(void) {
     }
     build->selection = 0;
     Vector2 screenCenter = (Vector2){ (float)ScreenWidth/2.0f, (float)ScreenHeight/2.0f };
-    build->positionFromCenter.Fl = (Vector2){ 200,-150};
-    build->positionFromCenter.Rl = (Vector2){-250,-170};
+    build->positionFromCenter.Fl = (Vector2){ 120,-60};
+    build->positionFromCenter.Rl = (Vector2){-120,-64};
     init_bodypos(build,screenCenter);
-    build->wheels.FwheelRadius = 40.f;
-    build->wheels.RwheelRadius = 40.f;
-    build->wheels.FwheelWidth = 40.f;
-    build->wheels.RwheelWidth = 40.f;
-    build->positionFromCenter.fT = (Vector2){ 150,-140};
-    build->positionFromCenter.rT = (Vector2){-200,-160};
+    build->wheels.FwheelRadius = 26.f;
+    build->wheels.RwheelRadius = 26.f;
+    build->wheels.FwheelWidth = 26.f;
+    build->wheels.RwheelWidth = 30.f;
+    build->positionFromCenter.fT = (Vector2){ 68,-56};
+    build->positionFromCenter.rT = (Vector2){-70,-60};
     init_bodypos(build,screenCenter);
 
 
@@ -232,8 +233,7 @@ int main(void) {
                 BeginDrawing();
                 ClearBackground(RAYWHITE);
                 DrawText("BUILDING SCREEN", 20, 20, 40, MAROON);
-                DrawText("Forward ->",screenCenter.x - 70, 20, 40, MAROON);
-                DrawCircleV(GetMousePosition(),5,GREEN);
+                DrawText("Forward -> (SPACE to send the car driving)",screenCenter.x - 70, 20, 40, MAROON);
 
                 //Buttons
                 DrawRectangleRec((Rectangle){30,100,100,40},GRAY);

@@ -152,7 +152,7 @@ car* create_le_car(int screenHeight, int screenWidth) {
     car->wheels.FwheelCenter = (Vector2){0,0};
     car->relativePositions.CtofLw = (Vector2){34,-28};
 
-    car->wheels.RwheelWidth = 13;
+    car->wheels.RwheelWidth = 15;
     car->wheels.RwheelRadius = 13;
     car->relativePositions.CtorLw = (Vector2){-35,-30};
     car->wheels.drifting = false;
